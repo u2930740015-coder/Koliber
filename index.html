@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>MK8 FAMILY: ULTIMATE TRACKER v26.5</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        :root {
+            --neon-blue: rgb(0, 180, 255);
+            --neon-yellow: #ffff00;
+            --neon-red: #ff4444;
+            --neon-green: #00ff88;
+            --glass-bg: rgba(0, 0, 0, 0.85);
+        }
+
+        body { 
+            margin: 0; background: #000; color: #fff; font-family: 'Orbitron', sans-serif; 
+            overflow-x: hidden; background-size: cover; background-position: center; 
+            background-attachment: fixed; transition: 0.5s ease-in-out;
+        }
+
+        .screen { display: none; min-height: 100vh; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+        .active { display: flex; }
+        
+        .content-box {
+            background: var(--glass-bg); backdrop-filter: blur(15px);
+            padding: 25px; border-radius: 30px; border: 2px solid rgba(0, 180, 255, 0.5);
+            box-shadow: 0 0 40px rgba(0,0,0,0.9); display: flex; flex-direction: column; align-items: center; width: 95%; max-width: 850px;
+        }
+
+        h1 { font-size: 2em; text-shadow: 0 0 15px var(--neon-blue); text-align: center; margin-bottom: 20px; }
+        .grid-speed { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
+        .card-speed { 
+            width: 80px; height: 110px; border: 4px solid #fff; border-radius: 15px; 
+            cursor: pointer; display: flex; align-items: center; justify-content: center; 
+            transition: 0.3s; font-size: 1.5em; font-weight: 900; background: rgba(0,0,0,0.4);
+        }
+        .card-speed:hover { transform: scale(1.1); background: #fff; color: #000; }
+        
+        .player-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; width: 100%; margin: 15px 0; }
+        .player-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; border: 1px solid #444; position: relative; text-align: center; }
+        .player-card b { color: var(--neon-blue); display: block; text-align: center; margin-bottom: 8px; }
+
+        select { padding: 8px; background: #000; color: white; border: 1px solid var(--neon-blue); width: 100%; border-radius: 8px; font-family: 'Orbitron'; font-size: 0.75em; margin-top: 5px; }
+        
+        .btn { margin-top: 15px; padding: 12px 30px; background: var(--neon-blue); color: #000; border: none; font-family: 'Orbitron'; font-weight: 900; cursor: pointer; border-radius: 50px; text-transform: uppercase; }
+        .btn-rand { width: 100%; padding: 6px; background: #333; color: var(--neon-yellow); border: 1px solid #555; border-radius: 8px; cursor: pointer; font-size: 0.7em; margin-top: 5px; font-family: 'Orbitron'; }
+        .btn-ai { background: #053b21 !important; color: var(--neon-green) !important; border: 1px solid var(--neon-green) !important; margin-bottom: 5px; }
+        .btn-skip { background: #444 !important; color: #fff !important; }
+        .btn-kick { background: var(--neon-red) !important; color: #fff !important; font-size: 0.6em; border: none; border-radius: 5px; cursor: pointer; margin-top: 5px; width: 100%; padding: 4px; }
+
+        .result-text { font-size: 0.7em; color: var(--neon-yellow); margin-top: 10px; min-height: 45px; line-height: 1.2; }
+
+        .grid-cups { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 350px; overflow-y: auto; width: 100%; }
+        .cup-item { background: rgba(0,0,0,0.5); border: 2px solid #fff; border-radius: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 10px; transition: 0.2s; }
+        
+        .stats-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; margin: 15px 0; }
+        .stat-card { background: rgba(0,180,255,0.2); padding: 10px; border-radius: 10px; text-align: center; border: 1px solid var(--neon-blue); }
+        .stat-card small { font-size: 0.6em; color: var(--neon-yellow); display: block; }
+        
+        .history-item { background: rgba(255,255,255,0.05); border-left: 4px solid var(--neon-blue); margin: 5px 0; padding: 12px; border-radius: 5px; width: 100%; font-size: 0.75em; display: flex; flex-direction: column; position: relative; box-sizing: border-box; }
+        .btn-del { position: absolute; top: 10px; right: 10px; background: var(--neon-red); color: white; border: none; border-radius: 5px; padding: 5px 8px; cursor: pointer; font-size: 10px; }
+        
+        .theme-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
+        .theme-card { height: 70px; border: 2px solid #fff; border-radius: 10px; background-size: cover; background-position: center; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
+        .locked { filter: grayscale(1) brightness(0.3); }
+
+        .prediction-box { text-align: center; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body onload="initApp()">
+
+    <div id="screen-speed" class="screen active">
+        <div class="content-box">
+            <h1>MK8 ULTIMATE v26.5</h1>
+            <div class="grid-speed">
+                <div class="card-speed" onclick="pickSpeed('50cc')">50</div>
+                <div class="card-speed" onclick="pickSpeed('100cc')">100</div>
+                <div class="card-speed" onclick="pickSpeed('150cc')">150</div>
+                <div class="card-speed" style="color:#f0f; border-color:#f0f" onclick="pickSpeed('Mirror')">M</div>
+                <div class="card-speed" style="color:var(--neon-yellow); border-color:var(--neon-yellow)" onclick="pickSpeed('200cc')">200</div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top: 20px;">
+                <button class="btn" style="background:var(--neon-yellow);" onclick="showBP()">MISJE</button>
+                <button class="btn" style="background:#0f0;" onclick="showThemes()">MOTYWY</button>
+            </div>
+            <button class="btn" style="background:#f0f; color:#fff;" onclick="showGlobalStats()">STATYSTYKI</button>
+        </div>
+    </div>
+
+    <div id="screen-chars" class="screen"><div class="content-box"><h1>POSTACIE</h1><div id="char-slots" class="player-grid"></div><button class="btn" onclick="confirmChars()">DALEJ</button></div></div>
+    
+    <div id="screen-parts" class="screen">
+        <div class="content-box">
+            <h1>GARAŻ</h1>
+            <div id="part-slots" class="player-grid"></div>
+            <button class="btn" onclick="confirmParts()">POTWIERDŹ WSZYSTKICH</button>
+        </div>
+    </div>
+
+    <div id="screen-cups" class="screen">
+        <div class="content-box">
+            <h1>PUCHAR</h1>
+            <div class="lottery-box" style="text-align:center; margin-bottom:20px; width:100%;">
+                <div id="lottery-display" style="font-size:1.8em; color:var(--neon-yellow); font-weight:900; height: 50px; display: flex; align-items: center; justify-content: center;">CO JEDZIEMY?</div>
+                <button class="btn" onclick="randCup()">🎲 LOSUJ</button>
+            </div>
+            <div id="cup-grid" class="grid-cups"></div>
+        </div>
+    </div>
+
+    <div id="screen-prediction" class="screen">
+        <div class="content-box">
+            <h2 style="color: var(--neon-green);">ANALIZA AI...</h2>
+            <div class="prediction-box">
+                <p style="font-size: 1.2em;">PROGNOZOWANY ZWYCIĘZCA:</p>
+                <h1 id="predicted-winner" style="font-size: 3em; color: var(--neon-yellow); margin: 10px 0;">---</h1>
+                <p id="prediction-reason" style="font-style: italic; color: #aaa;"></p>
+            </div>
+            <p id="race-voice-announcement" style="margin-top:20px; font-size: 0.8em; color: var(--neon-blue); text-align: center;"></p>
+        </div>
+    </div>
+
+    <div id="screen-races" class="screen"><div class="content-box"><h2>WYNIKI</h2><div id="race-container" style="width:100%"></div><button class="btn" onclick="finishCup()">ZAPISZ SESJĘ</button></div></div>
+    <div id="screen-final" class="screen"><div class="content-box"><h1>PODIUM</h1><div id="podium-list"></div><button class="btn" onclick="location.reload()">WYJDŹ</button></div></div>
+    <div id="screen-stats" class="screen"><div class="content-box"><h1>STATYSTYKI</h1><select id="stat-player-select" onchange="updatePlayerStats()"><option value="Mikołaj">MIKOŁAJ</option><option value="Miłosz">MIŁOSZ</option><option value="Mama">MAMA</option><option value="Tata">TATA</option></select><div class="stats-summary"><div class="stat-card"><small>MAX</small><b id="stat-max">-</b></div><div class="stat-card"><small>AVG</small><b id="stat-avg">-</b></div><div class="stat-card"><small>STREAK</small><b id="stat-streak" style="color:var(--neon-yellow)">0</b></div><div class="stat-card"><small>MIN</small><b id="stat-min">-</b></div></div><div id="history-list" style="width:100%; max-height:250px; overflow-y:auto; margin-top:10px;"></div><button class="btn" onclick="changeScreen('screen-speed')">POWRÓT</button></div></div>
+    <div id="screen-themes" class="screen"><div class="content-box"><h1>MOTYWY</h1><div id="theme-grid" class="theme-grid"></div><button class="btn" onclick="changeScreen('screen-speed')">POWRÓT</button></div></div>
+    <div id="screen-bp" class="screen"><div class="content-box"><h1>MISJE</h1><div id="bp-list" style="width:100%"></div><button class="btn" onclick="changeScreen('screen-speed')">POWRÓT</button></div></div>
+
+<script>
+    const STORAGE_HISTORY = 'mk8_history_v18'; 
+    const STORAGE_UNLOCKED = 'mk8_unlocked_missions_v26';
+    const STORAGE_THEME = 'mk8_active_theme_v18';
+
+    const freeThemes = [
+        {id: 8, name: "Pierwszy wpis", img: "https://www.gamespot.com/a/uploads/scale_super/1599/15997278/4073360-maple.jpg"},
+        {id: 10, name: "Poranny Mistrz", img: "https://tse1.mm.bing.net/th/id/OIP.c_0Jvx7WqDHZr84DO7w7DgAAAA?rs=1&pid=ImgDetMain&o=7&rm=3"},
+        {id: 11, name: "Kolekcjoner", img: "https://tse3.mm.bing.net/th/id/OIP.QYqT9I2NYUskIfFBQDj-ywAAAA?rs=1&pid=ImgDetMain&o=7&rm=3"},
+        {id: 12, name: "Szybki Start", img: "https://i.ytimg.com/vi/GdRzBjaQIIk/maxresdefault.jpg"},
+        {id: 13, name: "Zemsta Bowsera Jr.", img: "https://media.sketchfab.com/models/afdee841f05941ed91d14074675619bf/thumbnails/2bb7463618b94bc6acb1c1cd50e2dd5a/8d71ec769c15415a8f8a0a55113f3a28.jpeg"}
+    ];
+
+    const missionThemes = [
+        {id: 5, name: "Lustrzane Odbicie", goal: "Ukończ dowolny puchar w trybie Mirror", img: "https://i.ytimg.com/vi/zVadFHxmzo8/maxresdefault.jpg"},
+        {id: 2, name: "Demon Prędkości", goal: "Zdobądź minimum 57 punktów na 200cc", img: "https://vignette.wikia.nocookie.net/mariokart/images/9/9a/MK8-Course-N64_RainbowRoad.jpg/revision/latest?cb=20150529051720"},
+        {id: 10, name: "Sportowe Tętno", goal: "Tata musi stanąć na podium w Star Cup", img: "https://tse3.mm.bing.net/th/id/OIP.vX2fszXTynQN5vB3GUPmLgHaEK?rs=1&pid=ImgDetMain&o=7&rm=3"},
+        {id: 3, name: "Nocna Zmiana", goal: "Rozegraj sesję po godzinie 20:00", img: "https://static1.thegamerimages.com/wordpress/wp-content/uploads/2023/11/mario-kart-all-rainbow-roads-ranked-mario-kart-8-deluxe-two-thwomps-float-above-rainbow-road-snes.jpg"},
+        {id: 9, name: "Mistrz Bohaterów", goal: "Miłosz: min. 50 pkt grając Mii lub Link", img: "https://assets1.ignimgs.com/thumbs/2014/06/06/9dc4d875ce37c6ef356c1f87d826d871-1402083810/frame_0000_1280w.jpg"},
+        {id: 7, name: "Niedzielny Relaks", goal: "Rozegraj sesję w niedzielę", img: "https://tse2.mm.bing.net/th/id/OIP.RwvAbVrD1QTBIFjKo3RWFAHaEK?rs=1&pid=ImgDetMain&o=7&rm=3"},
+        {id: 4, name: "Złoty Special", goal: "Zdobądź minimum 48 punktów w Special Cup", img: "https://th.bing.com/th/id/R.fce1edb5134b543c34f2e5bf6259c248?rik=KL3%2f64qPMQheUg&pid=ImgRaw&r=0"}
+    ];
+
+    // PEŁNA BAZA CZĘŚCI (WSZYSTKIE)
+    const garage = {
+        bodies: ["Standard Kart", "Pipe Frame", "Mach 8", "Steel Driver", "Cat Cruiser", "Circuit Special", "Tri-Speeder", "Badwagon", "Prancer", "Biddybuggy", "Landship", "Sneeker", "Sports Coupe", "Gold Standard", "Standard Bike", "Comet", "Sport Bike", "The Duke", "Flame Rider", "Varmint", "Mr. Scooty", "Jet Bike", "Yoshi Bike", "Standard Quad", "Wild Wiggler", "Teddy Buggy", "Quacker", "Blue Falcon", "Tanooki Kart", "B Dasher", "Streetle", "P-Wing", "Koopa Clown", "Inkstriker", "Master Cycle Zero", "City Tripper"],
+        wheels: ["Standard", "Monster", "Roller", "Slick", "Metal", "Button", "Off-Road", "Sponge", "Wood", "Cushion", "Blue Standard", "Funky Monster", "Azure Roller", "Cyber Slick", "Slim", "Crimson Slim", "GLA Tires", "Gold Wheels", "Leaf Tires", "Triforce Tyres"],
+        gliders: ["Standard", "Cloud Glider", "Wario Wing", "Waddle Wing", "Peach Parasol", "Parachute", "Para-Foil", "Flower Glider", "Bowser Kite", "Plane Glider", "MKTV Parafoil", "Gold Glider", "Hylian Kite", "Paper Glider"]
+    };
+
+    const roster = ["(BRAK GRACZA)", "Mario 🔴", "Luigi 🟢", "Peach 🍑", "Daisy 🌼", "Rosalina 🌠", "Tanooki Mario 🍃", "Cat Peach 🐾", "Yoshi Rex", "Toad 🍄", "Koopa Troopa 🐢", "Shy Guy 🎭", "Lakitu ☁️", "Toadette 🎀", "King Boo 👑", "Baby Mario 🍼", "Baby Luigi 🍼", "Baby Peach 🍼", "Baby Daisy 🍼", "Baby Rosalina 🍼", "Metal Mario 🥈", "Pink Gold Peach 🌟", "Wario 🧄", "Waluigi 💜", "Donkey Kong 🦍", "Bowser 🐢🔥", "Bowser Jr. 👶", "Dry Bones 💀", "Dry Bowser 🦴", "Lemmy 🤡", "Larry 🕶️", "Wendy 🎀", "Ludwig 🎹", "Iggy 👓", "Roy 🕶️", "Morton 🔨", "Inkling Girl 🦑", "Inkling Boy 🦑", "Link 🛡️", "Villager (Boy) 🌲", "Villager (Girl) 🌲", "Isabelle 🐶", "Mii 👥", "Birdo 🎀", "Petey Piranha 🪴", "Wiggler 🐛", "Kamek 🪄", "Diddy Kong 🐒", "Funky Kong 🏄‍♂️", "Pauline 💃", "Peachette 👑", "Szołtysek 👑"];
+    const trackData = {"Mushroom":["Mario Kart Stadium","Water Park","Sweet Sweet Canyon","Thwomp Ruins"],"Flower":["Mario Circuit","Toad Harbor","Twisted Mansion","Shy Guy Falls"],"Star":["Sunshine Airport","Dolphin Shoals","Electrodrome","Mount Wario"],"Special":["Cloudtop Cruise","Bone-Dry Dunes","Bowser's Castle","Rainbow Road"],"Shell":["Moo Moo Meadows","GBA Mario Circuit","Cheep Cheep Beach","Toad's Turnpike"],"Banana":["Dry Dry Desert","SNES Donut Plains 3","N64 Royal Raceway","3DS DK Jungle"],"Leaf":["DS Wario Stadium","GCN Sherbet Land","3DS Melody Motorway","N64 Yoshi Valley"],"Lightning":["DS Tick-Tock Clock","3DS Piranha Plant Pipeway","Wii Grumble Volcano","N64 Rainbow Road"],"Egg":["Yoshi Circuit","Excitebike Arena","Dragon Driftway","Mute City"],"Triforce":["Wario's Gold Mine","SNES Rainbow Road","Ice Ice Outpost","Hyrule Circuit"],"Crossing":["Baby Park","Cheese Land","Wild Woods","Animal Crossing"],"Bell":["3DS Neo Bowser City","GBA Ribbon Road","Super Bell Subway","Big Blue"],"Golden Dash":["Paris Promenade","Toad Circuit","Choco Mountain","Coconut Mall"],"Lucky Cat":["Tokyo Blur","Shroom Ridge","Sky Garden","Ninja Hideaway"],"Turnip":["New York Minute","SNES Mario Circuit 3","N64 Kalimari Desert","Waluigi Pinball"],"Propeller":["Sydney Sprint","GBA Snow Land","Wii Mushroom Gorge","Sky-High Sundae"],"Rock":["London Loop","GBA Boo Lake","3DS Rock Rock Mountain","Wii Maple Treeway"],"Moon":["Berlin Byways","DS Peach Gardens","Merry Mountain","3DS Rainbow Road"],"Fruit":["Amsterdam Drift","GBA Riverside Park","Wii DK Summit","Yoshi's Island"],"Boomerang":["Bangkok Rush","DS Mario Circuit","Wii Waluigi Stadium","Singapore Speedway"],"Feather":["Athens Dash","GCN Daisy Cruiser","Wii Moonview Highway","Squeaky Clean Sprint"],"Cherry":["Los Angeles Laps","GBA Sunset Wilds","Wii Koopa Cape","Vancouver Velocity"],"Acorn":["Rome Avanti","GCN DK Mountain","Wii Daisy Circuit","Piranha Plant Cove"],"Spiny Shell":["Madrid Drive","3DS Rosalina's Ice World","SNES Bowser Castle 3","Wii Rainbow Road"]};
+    const cups = [{n:"Mushroom",i:"🍄"},{n:"Flower",i:"🌸"},{n:"Star",i:"⭐"},{n:"Special",i:"🏆"},{n:"Shell",i:"🐢"},{n:"Banana",i:"🍌"},{n:"Leaf",i:"🍂"},{n:"Lightning",i:"⚡"},{n:"Egg",i:"🥚"},{n:"Triforce",i:"🔺"},{n:"Crossing",i:"🍃"},{n:"Bell",i:"🔔"},{n:"Golden Dash",i:"🏁"},{n:"Lucky Cat",i:"🐱"},{n:"Turnip",i:"🥕"},{n:"Propeller",i:"🚁"},{n:"Rock",i:"🪨"},{n:"Moon",i:"🌙"},{n:"Fruit",i:"🍎"},{n:"Boomerang",i:"🪃"},{n:"Feather",i:"🪶"},{n:"Cherry",i:"🍒"},{n:"Acorn",i:"🌰"},{n:"Spiny Shell",i:"💙"}];
+    const ptsMap = {1:15, 2:12, 3:10, 4:9, 5:8, 6:7, 7:6, 8:5, 9:4, 10:3, 11:2, 12:1};
+    const players = ["Mikołaj", "Miłosz", "Mama", "Tata"];
+
+    let state = { speed: '', cup: '', chars: {}, parts: {}, icon: '', activePlayers: [] };
+
+    function initApp() { loadActiveTheme(); }
+    function changeScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+    function loadActiveTheme() { let a = localStorage.getItem(STORAGE_THEME); document.body.style.backgroundImage = `url('${a || freeThemes[0].img}')`; }
+
+    function pickSpeed(s) { state.speed = s; renderChars(); changeScreen('screen-chars'); }
+    
+    function renderChars() {
+        const slots = document.getElementById('char-slots'); slots.innerHTML = ''; 
+        players.forEach(p => { 
+            slots.innerHTML += `<div class="player-card"><b>${p}</b><button class="btn-rand btn-ai" onclick="aiPickChar('${p}')">💡 AI</button><select id="sel-char-${p}">${roster.map(r=>`<option value="${r}">${r}</option>`).join('')}</select><button class="btn-rand" onclick="randChar('${p}')">🎲</button><button class="btn-kick" onclick="kickPlayer('${p}')">❌</button></div>`; 
+        });
+    }
+
+    function aiPickChar(p) { document.getElementById(`sel-char-${p}`).value = roster.slice(1)[Math.floor(Math.random() * (roster.length - 1))]; }
+    function kickPlayer(p) { document.getElementById(`sel-char-${p}`).value = "(BRAK GRACZA)"; }
+    function randChar(p) { document.getElementById(`sel-char-${p}`).value = roster.slice(1)[Math.floor(Math.random() * (roster.length-1))]; }
+    
+    function confirmChars() { 
+        state.activePlayers = [];
+        players.forEach(p => {
+            const val = document.getElementById(`sel-char-${p}`).value;
+            if(val !== "(BRAK GRACZA)") { state.chars[p] = val; state.activePlayers.push(p); }
+        });
+        if(state.activePlayers.length === 0) return;
+        renderParts(); changeScreen('screen-parts'); 
+    }
+
+    function renderParts() {
+        const slots = document.getElementById('part-slots'); slots.innerHTML = '';
+        state.activePlayers.forEach(p => {
+            slots.innerHTML += `
+                <div class="player-card">
+                    <b>${p}</b>
+                    <div id="status-${p}" style="font-size: 0.6em; color: #0f0; margin-bottom: 5px; height: 15px;"></div>
+                    <div style="display:flex; gap: 5px;">
+                        <button class="btn-rand btn-skip" onclick="skipPart('${p}')">POMIŃ</button>
+                        <button class="btn-rand" onclick="randParts('${p}')">🎲 LOSUJ</button>
+                    </div>
+                    <div id="result-${p}" class="result-text">---</div>
+                    <div style="display:none">
+                        <select id="body-${p}">${garage.bodies.map(b=>`<option value="${b}">${b}</option>`).join('')}</select>
+                        <select id="wheel-${p}">${garage.wheels.map(w=>`<option value="${w}">${w}</option>`).join('')}</select>
+                        <select id="glid-${p}">${garage.gliders.map(g=>`<option value="${g}">${g}</option>`).join('')}</select>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function skipPart(p) {
+        document.getElementById(`status-${p}`).innerText = "GOTOWY!";
+        document.getElementById(`result-${p}`).innerHTML = "<span style='color:#aaa'>Ustawienia własne</span>";
+    }
+
+    function randParts(p) {
+        const b = garage.bodies[Math.floor(Math.random()*garage.bodies.length)];
+        const w = garage.wheels[Math.floor(Math.random()*garage.wheels.length)];
+        const g = garage.gliders[Math.floor(Math.random()*garage.gliders.length)];
+        document.getElementById(`body-${p}`).value = b;
+        document.getElementById(`wheel-${p}`).value = w;
+        document.getElementById(`glid-${p}`).value = g;
+        document.getElementById(`status-${p}`).innerText = "WYLOSOWANO!";
+        document.getElementById(`result-${p}`).innerHTML = `🚗 ${b}<br>🛞 ${w}<br>🪁 ${g}`;
+    }
+
+    function confirmParts() {
+        state.activePlayers.forEach(p => { 
+            state.parts[p] = { 
+                b: document.getElementById(`body-${p}`).value, 
+                w: document.getElementById(`wheel-${p}`).value, 
+                g: document.getElementById(`glid-${p}`).value 
+            }; 
+        });
+        renderCups(); changeScreen('screen-cups');
+    }
+
+    function renderCups() { const grid = document.getElementById('cup-grid'); grid.innerHTML = ''; cups.forEach((c, idx) => { grid.innerHTML += `<div class="cup-item" id="cup-item-${idx}" onclick="preparePrediction('${c.n}', '${c.i}')"><div>${c.i}</div><div style="font-size:10px;">${c.n}</div></div>`; }); }
+    
+    function randCup() {
+        const display = document.getElementById('lottery-display');
+        let counter = 0;
+        const interval = setInterval(() => {
+            const r = Math.floor(Math.random() * cups.length);
+            display.innerText = cups[r].i + " " + cups[r].n.toUpperCase();
+            counter++;
+            if(counter > 15) { 
+                clearInterval(interval); 
+                const selected = cups[r];
+                // KOMUNIKAT GŁOSOWY
+                speak(`Uwaga! Wylosowano puchar: ${selected.n}. Życzę powodzenia wszystkim kierowcom!`);
+                preparePrediction(selected.n, selected.i); 
+            }
+        }, 100);
+    }
+
+    function speak(text) {
+        if ('speechSynthesis' in window) {
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'pl-PL';
+            msg.rate = 1.0;
+            window.speechSynthesis.speak(msg);
+        }
+    }
+
+    function preparePrediction(cupName, cupIcon) {
+        state.cup = cupName; state.icon = cupIcon;
+        const hist = JSON.parse(localStorage.getItem(STORAGE_HISTORY)) || [];
+        let bestAvg = -1; let winner = "Każdy może wygrać!"; let reason = "Analizuję tętno sportowców...";
+
+        if(hist.length > 0) {
+            state.activePlayers.forEach(p => {
+                const pScores = hist.flatMap(h => h.final ? h.final.filter(f => f.id === p).map(f => f.pts) : []);
+                if(pScores.length > 0) {
+                    const avg = pScores.reduce((a,b) => a+b, 0) / pScores.length;
+                    if(avg > bestAvg) { bestAvg = avg; winner = p.toUpperCase(); reason = `Statystyki dają mu przewagę (Avg: ${avg.toFixed(1)})!`; }
+                }
+            });
+        }
+        document.getElementById('predicted-winner').innerText = winner;
+        document.getElementById('prediction-reason').innerText = reason;
+        document.getElementById('race-voice-announcement').innerText = `JEDZIEMY: ${cupIcon} ${cupName.toUpperCase()}`;
+        changeScreen('screen-prediction');
+        setTimeout(() => { startRaces(); }, 3500);
+    }
+
+    function startRaces() { 
+        const cont = document.getElementById('race-container'); cont.innerHTML = ''; 
+        trackData[state.cup].forEach((t, i) => {
+            let h = `<div style="background:rgba(255,255,255,0.05); padding:10px; margin-bottom:5px; border-radius:10px;"><b>${t}</b>`;
+            state.activePlayers.forEach(p => { h += `<div style="display:flex; justify-content:space-between; margin-top:2px; font-size:12px;"><span>${p}</span><select id="r-${i+1}-${p}">${Object.keys(ptsMap).map(n=>`<option>${n}</option>`).join('')}</select></div>`; });
+            cont.innerHTML += h + `</div>`;
+        });
+        changeScreen('screen-races'); 
+    }
+
+    function checkMissionsForNewSession(newSession) {
+        let unlocked = JSON.parse(localStorage.getItem(STORAGE_UNLOCKED)) || [];
+        const now = new Date();
+        const hr = now.getHours();
+        const day = now.getDay();
+        const unlock = (id, msg) => { if(!unlocked.includes(id)) { unlocked.push(id); alert("MISJA UKOŃCZONA: " + msg); } };
+        if(newSession.speed === "Mirror") unlock(5, "Lustrzane Odbicie!");
+        newSession.final.forEach(p => { if(newSession.speed === "200cc" && p.pts >= 57) unlock(2, "Demon Prędkości!"); });
+        if(newSession.cup === "Star") {
+            const tata = newSession.final.find(f => f.id === "Tata");
+            const rank = newSession.final.indexOf(tata) + 1;
+            if(tata && rank <= 3) unlock(10, "Sportowe Tętno!");
+        }
+        if(hr >= 20 || hr < 5) unlock(3, "Nocna Zmiana!");
+        newSession.final.forEach(p => {
+            if(p.id === "Miłosz" && p.pts >= 50 && (p.char.includes("Mii") || p.char.includes("Link"))) unlock(9, "Mistrz Bohaterów!");
+        });
+        if(day === 0) unlock(7, "Niedzielny Relaks!");
+        if(newSession.cup === "Special") {
+            newSession.final.forEach(p => { if(p.pts >= 48) unlock(4, "Złoty Special!"); });
+        }
+        localStorage.setItem(STORAGE_UNLOCKED, JSON.stringify(unlocked));
+    }
+
+    function finishCup() {
+        let res = state.activePlayers.map(p => ({ id: p, pts: 0, char: state.chars[p], build: state.parts[p] }));
+        for(let i=1; i<=4; i++) { state.activePlayers.forEach(p => { let rk = parseInt(document.getElementById(`r-${i}-${p}`).value); res.find(x => x.id === p).pts += ptsMap[rk]; }); }
+        res.sort((a,b) => b.pts - a.pts);
+        const newSession = { cup: state.cup, icon: state.icon, final: res, speed: state.speed, date: new Date().toISOString() };
+        checkMissionsForNewSession(newSession);
+        let hist = JSON.parse(localStorage.getItem(STORAGE_HISTORY)) || [];
+        hist.push(newSession);
+        localStorage.setItem(STORAGE_HISTORY, JSON.stringify(hist));
+        const list = document.getElementById('podium-list'); list.innerHTML = '';
+        res.forEach((r, idx) => { list.innerHTML += `<div style="margin:5px; padding:10px; border-radius:10px; width:280px; display:flex; justify-content:space-between; background:rgba(0,180,255,0.2);"><span>${idx+1}. ${r.id}</span><b>${r.pts}</b></div>`; });
+        changeScreen('screen-final');
+    }
+
+    function updatePlayerStats() {
+        const hist = JSON.parse(localStorage.getItem(STORAGE_HISTORY)) || [];
+        const sel = document.getElementById('stat-player-select').value;
+        const list = document.getElementById('history-list'); list.innerHTML = '';
+        let sc = []; let cur = 0, maxS = 0;
+        hist.forEach(h => { if(h.final && h.final[0] && h.final[0].id === sel) { cur++; if(cur > maxS) maxS = cur; } else if(h.final && h.final.some(x => x.id === sel)) { cur = 0; } });
+        for (let i = hist.length - 1; i >= 0; i--) {
+            const h = hist[i]; const pr = h.final ? h.final.find(x => x.id === sel) : null;
+            if(pr) { sc.push(pr.pts); list.innerHTML += `<div class="history-item"><button class="btn-del" onclick="deleteRaceByIndex(${i})">X</button><b>${h.icon || '🏁'} ${h.cup} (${h.speed})</b><b style="color:var(--neon-yellow)">${pr.pts} pkt</b></div>`; }
+        }
+        document.getElementById('stat-streak').innerText = maxS;
+        if(sc.length > 0) {
+            document.getElementById('stat-max').innerText = Math.max(...sc);
+            document.getElementById('stat-min').innerText = Math.min(...sc);
+            document.getElementById('stat-avg').innerText = (sc.reduce((a,b)=>a+b,0)/sc.length).toFixed(1);
+        }
+    }
+
+    function deleteRaceByIndex(index) {
+        if(!confirm("Usunąć ten wpis?")) return;
+        let hist = JSON.parse(localStorage.getItem(STORAGE_HISTORY)) || [];
+        hist.splice(index, 1);
+        localStorage.setItem(STORAGE_HISTORY, JSON.stringify(hist));
+        updatePlayerStats();
+    }
+
+    function showThemes() {
+        const grid = document.getElementById('theme-grid'); grid.innerHTML = '';
+        const unlocked = JSON.parse(localStorage.getItem(STORAGE_UNLOCKED)) || [];
+        freeThemes.forEach(t => { grid.innerHTML += `<div class="theme-card" style="background-image:url('${t.img}')" onclick="setActiveTheme('${t.img}')"></div>`; });
+        missionThemes.forEach(t => {
+            const isL = !unlocked.includes(t.id);
+            grid.innerHTML += `<div class="theme-card ${isL ? 'locked' : ''}" style="background-image:url('${t.img}')" onclick="${isL ? "alert('Zablokowane: " + t.goal + "')" : "setActiveTheme('" + t.img + "')"}">${isL ? '🔒' : ''}</div>`;
+        });
+        changeScreen('screen-themes');
+    }
+
+    function showBP() {
+        const bl = document.getElementById('bp-list'); bl.innerHTML = '';
+        const unlocked = JSON.parse(localStorage.getItem(STORAGE_UNLOCKED)) || [];
+        missionThemes.forEach(m => {
+            const done = unlocked.includes(m.id);
+            bl.innerHTML += `<div class="history-item"><span><b>${m.name}</b>: ${m.goal}</span><span style="color:${done ? '#0f0' : '#777'}">${done ? '✅ ZALICZONE' : '🔒 W TRAKCIE'}</span></div>`;
+        });
+        changeScreen('screen-bp');
+    }
+
+    function setActiveTheme(url) { 
+        if(!url) return;
+        localStorage.setItem(STORAGE_THEME, url); 
+        document.body.style.backgroundImage = "url('" + url + "')"; 
+    }
+    
+    function showGlobalStats() { updatePlayerStats(); changeScreen('screen-stats'); }
+</script>
+</body>
+</html>
