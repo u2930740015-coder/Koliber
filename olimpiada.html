@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MK8D - PRO STATUS SYSTEM GOLD</title>
+    <style>
+        :root { 
+            --mk-red: #e74c3c; 
+            --bg-dark: #0b0b0b; 
+            --panel-bg: rgba(20, 20, 20, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+        
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: var(--bg-dark); 
+            color: #fff; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            overflow-x: hidden; 
+        }
+        
+        #app-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            filter: brightness(0.5) blur(1px);
+            z-index: -2;
+            transition: all 0.8s ease-in-out;
+        }
+
+        /* --- NOWA SEKCJA DLA WIDOKU IPAD NA TELEFONIE --- */
+        @media (max-width: 768px) {
+            body { flex-direction: column; align-items: center; }
+            
+            .sidebar { 
+                position: relative !important; 
+                width: 90% !important; 
+                height: 80px !important; 
+                left: 0 !important; 
+                top: 10px !important; 
+                display: flex !important; 
+                flex-direction: row !important; 
+                overflow-x: auto !important; 
+                overflow-y: hidden !important;
+                white-space: nowrap;
+                margin-bottom: 20px;
+            }
+            .sidebar h4 { display: none; } /* Chowa napis na małym ekranie dla miejsca */
+            .sidebar div { display: inline-block !important; margin-right: 10px; border-bottom: none !important; border-right: 1px solid var(--glass-border); padding: 15px !important; }
+
+            .container { 
+                margin: 10px !important; 
+                width: 95% !important; 
+                padding: 15px !important; 
+                box-sizing: border-box;
+            }
+
+            table { font-size: 0.8em; }
+            .historia-grid { grid-template-columns: 1fr 1fr !important; }
+            .theme-btn-toggle { top: 10px; right: 10px; padding: 5px 10px; font-size: 0.7em; }
+        }
+        /* --- KONIEC SEKCJI IPAD --- */
+
+        /* MENU MOTYWÓW */
+        #theme-menu {
+            position: fixed; right: -350px; top: 0; width: 320px; height: 100%;
+            background: rgba(0, 0, 0, 0.4); border-left: 1px solid var(--mk-red);
+            z-index: 1000; padding: 20px; transition: 0.5s ease; overflow-y: auto;
+            backdrop-filter: blur(25px);
+        }
+        #theme-menu.active { right: 0; }
+        .theme-btn-toggle { position: fixed; right: 20px; top: 20px; z-index: 1001; background: var(--mk-red); color: white; border: none; padding: 10px 15px; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+        
+        .theme-section h4 { color: gold; font-size: 0.75em; text-transform: uppercase; border-bottom: 1px solid var(--glass-border); padding-bottom: 5px; margin-top: 25px; letter-spacing: 1px; }
+        .grid-themes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 250px; overflow-y: auto; padding-right: 5px; }
+        
+        .t-btn { height: 40px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.65em; font-weight: bold; overflow: hidden; color: white; text-shadow: 1px 1px 2px #000; text-align: center; padding: 4px; transition: 0.2s; line-height: 1.1; background-size: cover !important; background-position: center !important; }
+        .t-btn:hover { border-color: #fff; transform: scale(1.05); }
+
+        /* SPLASH SCREEN */
+        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease-in-out; }
+        .loader-container { text-align: center; width: 80%; max-width: 500px; }
+        #percent-text { font-size: 4em; font-weight: 900; text-shadow: 0 0 20px var(--mk-red); margin-bottom: 10px; }
+        .progress-bar-bg { width: 100%; height: 15px; background: rgba(255,255,255,0.1); border-radius: 50px; overflow: hidden; border: 1px solid #444; }
+        #progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #e74c3c, gold); transition: width 0.1s linear; }
+        #status-label { color: gold; margin-top: 15px; text-transform: uppercase; font-size: 0.85em; letter-spacing: 2px; font-weight: bold; min-height: 1.2em; }
+
+        /* GŁÓWNY INTERFEJS */
+        .sidebar { position: fixed; left: 15px; top: 5%; bottom: 5%; width: 180px; background: var(--panel-bg); padding: 10px; border-radius: 15px; border: 1px solid var(--glass-border); overflow-y: auto; backdrop-filter: blur(15px); }
+        .container { max-width: 900px; width: 100%; margin: 20px 20px 20px 220px; background: var(--panel-bg); padding: 25px; border-radius: 20px; border: 1px solid var(--glass-border); border-top: 5px solid var(--mk-red); backdrop-filter: blur(15px); position: relative; }
+        
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid var(--glass-border); text-align: center; }
+        .elo-cell { color: #2ecc71; font-weight: bold; font-family: monospace; font-size: 1.2em; }
+        
+        #panel-historii { margin-top: 20px; padding: 20px; background: rgba(0,0,0,0.4); border-radius: 15px; border: 1px solid gold; display: none; backdrop-filter: blur(20px); }
+        .historia-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 15px; }
+        .karta-wyscigu { display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; border: 1px solid var(--glass-border); }
+        .trasa-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 1px solid #555; background: #000; display: flex; align-items: center; justify-content: center; font-size: 1.2em; }
+
+        .bg-gold { background-color: rgba(255, 215, 0, 0.4) !important; color: #fff !important; }
+        .bg-silver { background-color: rgba(192, 192, 192, 0.4) !important; color: #fff !important; }
+        .bg-bronze { background-color: rgba(205, 127, 50, 0.4) !important; color: #fff !important; }
+        .bg-platinum { background-color: rgba(144, 238, 144, 0.4) !important; color: #fff !important; }
+        
+        #track-list-container { height: 350px; overflow-y: scroll; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); border-radius: 8px; margin: 10px 0; }
+        .track-item { padding: 10px; border-bottom: 1px solid var(--glass-border); cursor: pointer; font-size: 0.9em; transition: 0.2s; }
+        .track-item:hover { background: rgba(255,255,255,0.1); }
+        .track-item.selected { background: var(--mk-red) !important; border: 1px solid #fff; }
+        
+        .cup-header { background: rgba(0,0,0,0.6); color: gold; padding: 5px; font-weight: bold; position: sticky; top: 0; font-size: 0.8em; backdrop-filter: blur(5px); }
+        .controls { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-top: 20px; border: 1px solid var(--glass-border); }
+        select, button { padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.5); color: white; width: 100%; border: 1px solid var(--glass-border); }
+        button.add-btn { background: var(--mk-red); border: none; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.3s; }
+        button.add-btn:hover { filter: brightness(1.2); box-shadow: 0 0 15px rgba(231, 76, 60, 0.5); }
+    </style>
+</head>
+<body>
+
+<div id="app-bg"></div>
+
+<button class="theme-btn-toggle" onclick="toggleThemeMenu()">🎨 MOTYWY</button>
+<div id="theme-menu">
+    <h3 style="margin-top:0">PERSONALIZACJA</h3>
+
+    <div class="theme-section">
+        <h4>Kolibry - Nowość</h4>
+        <div class="grid-themes" id="grid-kolibry"></div>
+    </div>
+
+    <div class="theme-section">
+        <h4>Moje Linki (z kodu)</h4>
+        <div class="grid-themes" id="grid-custom"></div>
+    </div>
+
+    <div class="theme-section">
+        <h4>Postacie Mario Kart (48)</h4>
+        <div class="grid-themes" id="grid-chars"></div>
+    </div>
+    <div class="theme-section">
+        <h4>Ekstraklasa - Motywy</h4>
+        <div class="grid-themes" id="grid-ekstra"></div>
+    </div>
+    <div class="theme-section">
+        <h4>Pierwsza Liga - Motywy</h4>
+        <div class="grid-themes" id="grid-pierwsza"></div>
+    </div>
+    <div class="theme-section">
+        <h4>La Liga - Motywy</h4>
+        <div class="grid-themes" id="grid-laliga"></div>
+    </div>
+    <div class="theme-section">
+        <h4>Systemowe (44)</h4>
+        <div class="grid-themes" id="grid-sys"></div>
+    </div>
+</div>
+
+<div id="loading-screen">
+    <div class="loader-container">
+        <div id="percent-text">0%</div>
+        <div class="progress-bar-bg"><div id="progress-bar-fill"></div></div>
+        <div id="status-label">Inicjalizacja...</div>
+    </div>
+</div>
+
+<div class="sidebar" id="cup-nav">
+    <h4 style="text-align:center;">🏆 PUCHARY</h4>
+</div>
+
+<div class="container">
+    <h1>🏎️ MK8D <span style="font-weight: 100;">PRO SYSTEM</span></h1>
+    <table id="main-ranking">
+        <thead><tr><th>Poz.</th><th>Kierowca</th><th>🥇</th><th>🥈</th><th>🥉</th><th>💿</th><th>ELO</th></tr></thead>
+        <tbody id="ranking-body"></tbody>
+    </table>
+
+    <div id="panel-historii">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid gold; padding-bottom: 10px;">
+            <h3 id="historia-tytul" style="color: gold; margin: 0;"></h3>
+            <button onclick="document.getElementById('panel-historii').style.display='none'" style="width: auto; padding: 5px 15px; font-size: 0.8em;">X</button>
+        </div>
+        <div id="lista-osiagniec" class="historia-grid"></div>
+    </div>
+
+    <div class="controls">
+        <label>1. Kierowca:</label>
+        <select id="select-zawodnik" onchange="odswiezMenuTras()"></select>
+        <label style="margin-top:15px; display:block;">2. Wyścig:</label>
+        <div id="track-list-container"></div>
+        <label style="margin-top:15px; display:block;">3. Wynik:</label>
+        <select id="select-medal">
+            <option value="1.0">🥇 Złoto</option><option value="0.6">🥈 Srebro</option>
+            <option value="0.3">🥉 Brąz</option><option value="0.0">💿 Platyna</option>
+        </select>
+        <button class="add-btn" onclick="przyznajMedal()">ZATWIERDŹ WYŚCIG</button>
+    </div>
+</div>
+
+<script>
+    const STORAGE_KEY = 'mk8_v11_status_labels';
+    const K_FACTOR = 32;
+    let wybranaTrasa = "";
+
+    const MOTYWY_KOLIBRY = {
+        "Szmaragdowy Koliber": "linear-gradient(135deg, #004d40, #1de9b6, #004d40)",
+        "Rubinowe Gardło": "linear-gradient(135deg, #b71c1c, #424242, #b71c1c)",
+        "Złoty Koliber": "linear-gradient(135deg, #fbc02d, #fff9c4, #f9a825)",
+        "Ametystowy Blask": "linear-gradient(135deg, #4a148c, #ce93d8, #4a148c)",
+        "Błękitny Oceaniczny": "linear-gradient(135deg, #01579b, #81d4fa, #01579b)",
+        "Tropikalny Raj": "linear-gradient(135deg, #ff6f00, #ffecb3, #00c853)",
+        "Nocny Łowca": "linear-gradient(135deg, #212121, #616161, #000000)",
+        "Tęczowy Pióropusz": "linear-gradient(135deg, #f44336, #2196f3, #4caf50, #ffeb3b)",
+        "Srebrzysty Poranek": "linear-gradient(135deg, #cfd8dc, #ffffff, #90a4ae)",
+        "Fioletowy Neon": "linear-gradient(135deg, #aa00ff, #ea80fc, #4a148c)",
+	"Lodigezja": "linear-gradient(135deg, #FFB6C1, #8A2BE2, #7B68EE)"
+    };
+
+    const MOJE_WLASNE_LINKI = {
+        "Mario Kart Stadium": "https://static1.thegamerimages.com/wordpress/wp-content/uploads/wm/2024/08/overview-of-the-first-drift-in-mario-kart-stadium-from-mario-kart-8.jpg",
+        "Water Park": "https://mario.wiki.gallery/images/thumb/4/41/MK8-Course-WaterPark.jpg/1200px-MK8-Course-WaterPark.jpg",
+        "Sweet Sweet Canyon": "https://assets1.ignimgs.com/thumbs/2014/06/06/9dc4d875ce37c6ef356c1f87d826d871-1402083810/frame_0000_1280w.jpg",
+        "Thwomp Ruins": "https://th.bing.com/th/id/OIP.QJL65VL_rqttLjKl70VgXAHaEK?w=322&h=181&c=7&r=0&o=7&pid=1.7&rm=3",
+        "Mario Circuit": "https://i.ytimg.com/vi/VbKEW4MXjL4/maxresdefault.jpg",
+        "Toad Harbour": "https://i.ytimg.com/vi/uUtwPj7oKcw/maxresdefault.jpg",
+        "Twisted Mansion": "https://i.ytimg.com/vi/GdRzBjaQIIk/maxresdefault.jpg",
+        "Shy Guy Falls": "https://i.ytimg.com/vi/7NIoBQNMGj0/maxresdefault.jpg"
+    };
+
+    const IKONY_TRAS = {
+        "Mario Kart Stadium": "https://static1.thegamerimages.com/wordpress/wp-content/uploads/wm/2024/08/overview-of-the-first-drift-in-mario-kart-stadium-from-mario-kart-8.jpg",
+        "Water Park": "https://mario.wiki.gallery/images/thumb/4/41/MK8-Course-WaterPark.jpg/1200px-MK8-Course-WaterPark.jpg",
+        "Sweet Sweet Canyon": "https://assets1.ignimgs.com/thumbs/2014/06/06/9dc4d875ce37c6ef356c1f87d826d871-1402083810/frame_0000_1280w.jpg",
+        "Thwomp Ruins": "https://th.bing.com/th/id/OIP.QJL65VL_rqttLjKl70VgXAHaEK?w=322&h=181&c=7&r=0&o=7&pid=1.7&rm=3",
+        "Mario Circuit": "https://i.ytimg.com/vi/VbKEW4MXjL4/maxresdefault.jpg",
+        "Toad Harbour": "https://i.ytimg.com/vi/uUtwPj7oKcw/maxresdefault.jpg",
+        "Twisted Mansion": "https://i.ytimg.com/vi/GdRzBjaQIIk/maxresdefault.jpg",
+        "Shy Guy Falls": "https://i.ytimg.com/vi/7NIoBQNMGj0/maxresdefault.jpg"
+    };
+
+    const MOTYWY_EKSTRAKLASA = {
+        "Jagiellonia": "repeating-linear-gradient(90deg, #ff0000 0, #ff0000 40px, #ffcc00 40px, #ffcc00 80px)",
+        "Wisła Płock": "linear-gradient(135deg, #0055ff, #ffffff, #0055ff)",
+        "Górnik Zabrze": "linear-gradient(135deg, #ffffff, #0055ff, #ff0000)",
+        "Zagłębie Lubin": "linear-gradient(135deg, #ff6600, #ffffff, #006600)",
+        "Cracovia": "linear-gradient(90deg, #ff0000 50%, #ffffff 50%)",
+        "Lech Poznań": "linear-gradient(135deg, #0055ff, #ffffff)",
+        "Raków": "linear-gradient(135deg, #ff0000, #003399)",
+        "Korona Kielce": "linear-gradient(90deg, #ffcc00 50%, #ff0000 50%)",
+        "Lechia Gdańsk": "linear-gradient(135deg, #ffffff, #009900)",
+        "Radomiak": "linear-gradient(135deg, #006600, #ffffff)",
+        "GKS Katowice": "linear-gradient(90deg, #ffcc00 50%, #000000 50%)",
+        "Piast Gliwice": "linear-gradient(135deg, #0000ff, #ffcc00)",
+        "Pogoń Szczecin": "linear-gradient(135deg, #000066, #800000)",
+        "Motor Lublin": "linear-gradient(135deg, #ffff00, #0055ff)",
+        "Widzew Łódź": "linear-gradient(135deg, #ff0000, #ffffff)",
+        "Arka Gdynia": "linear-gradient(135deg, #ffff00, #0000ff)",
+        "Legia Warszawa": "linear-gradient(135deg, #ffffff, #006600, #000000)",
+        "Bruk-Bet": "linear-gradient(135deg, #ff6600, #000000)"
+    };
+
+    const MOTYWY_PIERWSZA_LIGA = {
+        "Miedź Legnica": "linear-gradient(135deg, #0055ff, #009900, #ffff00)",
+        "Wisła Kraków": "linear-gradient(135deg, #ff0000, #ffffff, #0055ff)",
+        "Ruch Chorzów": "linear-gradient(135deg, #0055ff, #ffffff)",
+        "ŁKS Łódź": "linear-gradient(135deg, #ffffff, #ff0000)",
+        "Stal Rzeszów": "linear-gradient(135deg, #ffffff, #0055ff)",
+        "Polonia Warszawa": "linear-gradient(135deg, #000000, #ff0000, #ffffff)",
+        "Warta Poznań": "linear-gradient(135deg, #009900, #ffffff)",
+        "Odra Opole": "linear-gradient(135deg, #0000ff, #ff0000)"
+    };
+
+    const MOTYWY_LALIGA = {
+        "Real Madrid": "linear-gradient(135deg, #ffffff, #f1c40f)",
+        "FC Barcelona": "linear-gradient(135deg, #004d98, #a50044)",
+        "Atletico Madrid": "repeating-linear-gradient(90deg, #ff0000, #ff0000 30px, #ffffff 30px, #ffffff 60px)",
+        "Real Sociedad": "linear-gradient(90deg, #0055ff 50%, #ffffff 50%)",
+        "Valencia CF": "linear-gradient(135deg, #ffffff, #000000, #ff6600)",
+        "Sevilla FC": "linear-gradient(135deg, #ffffff, #ff0000)",
+        "Real Betis": "linear-gradient(90deg, #009900 50%, #ffffff 50%)",
+        "Athletic Bilbao": "repeating-linear-gradient(90deg, #ff0000, #ff0000 20px, #ffffff 20px, #ffffff 40px)",
+        "Girona FC": "linear-gradient(135deg, #ff0000, #ffffff)"
+    };
+
+    const MOTYWY_POSTACI = {
+        "Mario": "linear-gradient(135deg, #ff0000, #0055ff)", "Luigi": "linear-gradient(135deg, #00b300, #000000)", "Peach": "linear-gradient(135deg, #ff99cc, #ffe6f2)", "Daisy": "linear-gradient(135deg, #ffcc00, #ff6600)", "Rosalina": "linear-gradient(135deg, #00ffff, #0066ff)", "Tanooki Mario": "linear-gradient(135deg, #663300, #ffcc99)", "Cat Peach": "linear-gradient(135deg, #ffb3ff, #ff66cc)", "Yoshi": "linear-gradient(135deg, #99ff33, #ffffff)", "Toad": "linear-gradient(135deg, #ffffff, #ff0000)", "Koopa Troopa": "linear-gradient(135deg, #00ff00, #ffff00)", "Shy Guy": "linear-gradient(135deg, #ff3333, #000000)", "Lakitu": "linear-gradient(135deg, #99ccff, #ffffff)", "Toadette": "linear-gradient(135deg, #ff6699, #ffffff)", "King Boo": "linear-gradient(135deg, #e6e6e6, #6600cc)", "Baby Mario": "linear-gradient(135deg, #ff4d4d, #ffffff)", "Baby Luigi": "linear-gradient(135deg, #4dff4d, #ffffff)", "Baby Peach": "linear-gradient(135deg, #ffb3d9, #ffffff)", "Baby Daisy": "linear-gradient(135deg, #ffe066, #ffffff)", "Baby Rosalina": "linear-gradient(135deg, #b3ffff, #ffffff)", "Metal Mario": "linear-gradient(135deg, #737373, #000000)", "Pink Gold Peach": "linear-gradient(135deg, #ff9999, #ffd700)", "Wario": "linear-gradient(135deg, #ffff00, #6600cc)", "Waluigi": "linear-gradient(135deg, #6600cc, #000000)", "Donkey Kong": "linear-gradient(135deg, #802b00, #ff0000)", "Bowser": "linear-gradient(135deg, #006600, #ffcc00)", "Dry Bones": "linear-gradient(135deg, #d9d9d9, #000000)", "Bowser Jr.": "linear-gradient(135deg, #ffdb4d, #006600)", "Dry Bowser": "linear-gradient(135deg, #404040, #ff0000)", "Lemmy": "linear-gradient(135deg, #ff99ff, #33ccff)", "Morton": "linear-gradient(135deg, #595959, #ffffff)", "Wendy": "linear-gradient(135deg, #ff3399, #ffff00)", "Iggy": "linear-gradient(135deg, #33ff33, #6600cc)", "Roy": "linear-gradient(135deg, #ff66cc, #ff0000)", "Ludwig": "linear-gradient(135deg, #3366ff, #ffffff)", "Larry": "linear-gradient(135deg, #33ccff, #0000ff)", "Inkling Girl": "linear-gradient(135deg, #ff6600, #cc00ff)", "Inkling Boy": "linear-gradient(135deg, #3333ff, #00ff00)", "Link": "linear-gradient(135deg, #2d8659, #4db8ff)", "Villager Boy": "linear-gradient(135deg, #4db8ff, #ffffff)", "Villager Girl": "linear-gradient(135deg, #ff80df, #ffffff)", "Isabelle": "linear-gradient(135deg, #ffffb3, #ff66cc)", "Funky Kong": "linear-gradient(135deg, #ffcc00, #802b00)", "Diddy Kong": "linear-gradient(135deg, #cc0000, #ffcc00)", "Pauline": "linear-gradient(135deg, #800000, #ff0000)", "Peachette": "linear-gradient(135deg, #ff66b3, #ffd700)", "Petey Piranha": "linear-gradient(135deg, #008000, #ff0000)", "Wiggler": "linear-gradient(135deg, #ffff33, #000000)", "Kamek": "linear-gradient(135deg, #3366ff, #ffffff)"
+    };
+
+    const MOTYWY_SYS = {
+        "Deep Space": "linear-gradient(135deg, #000428, #004e92)",
+        "Cyberpunk": "linear-gradient(135deg, #f40076, #342d7e)",
+        "Gold Rush": "linear-gradient(135deg, #bf953f, #fcf6ba)",
+        "Ice World": "linear-gradient(135deg, #83a4d4, #b6fbff)",
+        "Neon Mint": "linear-gradient(135deg, #00ffcc, #003322)",
+        "Purple Haze": "linear-gradient(135deg, #cc00ff, #330044)",
+        "Lava Flow": "linear-gradient(135deg, #ff4500, #220000)",
+        "Electric Blue": "linear-gradient(135deg, #0077ff, #001133)",
+        "Toxic": "linear-gradient(135deg, #adff2f, #1a3300)",
+        "Hot Pink": "linear-gradient(135deg, #ff1493, #33001a)",
+        "Sunburn": "linear-gradient(135deg, #ff8c00, #441100)",
+        "Vaporwave": "linear-gradient(135deg, #ff71ce, #01cdfe, #05ffa1)",
+        "Dark Knight": "linear-gradient(135deg, #232526, #414345)",
+        "Matrix": "linear-gradient(180deg, #000000, #003300, #000000)",
+        "Forest": "linear-gradient(135deg, #11998e, #38ef7d)",
+        "Ocean Depth": "linear-gradient(180deg, #2c3e50, #000000)",
+        "Sahara": "linear-gradient(135deg, #f4a460, #8b4513)",
+        "Tundra": "linear-gradient(135deg, #eef2f3, #8e9eab)",
+        "Cherry Blossom": "linear-gradient(135deg, #ffd1ff, #fad0c4)",
+        "Midnight": "linear-gradient(135deg, #232526, #414345)",
+        "Autumn": "linear-gradient(135deg, #dad299, #b06ab3)",
+        "Skyline": "linear-gradient(180deg, #1e3c72, #2a5298)",
+        "Emerald": "linear-gradient(135deg, #0575E6, #021B79)",
+        "Volcano": "linear-gradient(135deg, #434343, #000000)",
+        "Platinum": "linear-gradient(135deg, #e5e5e5, #666666)",
+        "Rose Gold": "linear-gradient(135deg, #e7c1d3, #9d6d7e)",
+        "Bronze Age": "linear-gradient(135deg, #553311, #aa7744)",
+        "Black Diamond": "radial-gradient(circle, #434343 0%, #000000 100%)",
+        "Royal Purple": "linear-gradient(135deg, #6a11cb, #2575fc)",
+        "Carbon Fiber": "repeating-linear-gradient(45deg, #111, #111 2px, #222 2px, #222 4px)",
+        "Silk": "linear-gradient(135deg, #af8231, #fcf6ba)",
+        "Ruby": "linear-gradient(135deg, #870000, #190a05)",
+        "Sapphire": "linear-gradient(135deg, #000046, #1cb5e0)",
+        "Copper": "linear-gradient(135deg, #b87333, #221100)",
+        "Blood Moon": "radial-gradient(circle, #ff0000, #000000)",
+        "Glitch": "linear-gradient(90deg, #ff0000 0%, #00ff00 50%, #0000ff 100%)",
+        "Galaxy": "radial-gradient(circle, #20002c, #cbb4d4)",
+        "Solar": "linear-gradient(135deg, #ff512f, #dd2476)",
+        "Candy": "linear-gradient(135deg, #ee9ca7, #ffdde1)",
+        "Deep Sea": "linear-gradient(135deg, #4b6cb7, #182848)",
+        "Abyss": "linear-gradient(180deg, #0f2027, #203a43, #2c5364)",
+        "Retro": "linear-gradient(135deg, #3f2b96, #a8c0ff)",
+        "Overdrive": "linear-gradient(135deg, #f12711, #f5af19)",
+        "Ender": "linear-gradient(135deg, #000000, #4b0082)"
+    };
+
+    function startLoading() {
+        let p = 0;
+        const label = document.getElementById('status-label');
+        const teraz = new Date();
+        const h = teraz.getHours().toString().padStart(2, '0');
+        const m = teraz.getMinutes().toString().padStart(2, '0');
+        const calyCzas = h + m;
+        const wagi = { '0': 5, '1': 2, '2': 8, '3': 0, '4': -2, '5': 3, '6': 6, '7': -2, '8': -1, '9': 7 };
+        let x = 20;
+        let sumaMod = 0;
+        calyCzas.split('').forEach(cyfra => { sumaMod += wagi[cyfra]; });
+        let szybkosc = Math.max(5, x + sumaMod);
+
+        const interval = setInterval(() => {
+            p++;
+            document.getElementById('percent-text').innerText = p + "%";
+            document.getElementById('progress-bar-fill').style.width = p + "%";
+            if (p <= 20) label.innerText = "Synchronizacja czasu...";
+            else if (p <= 60) label.innerText = "Hey, browser, make another row in the table...";
+            else if (p <= 90) label.innerText = "Weryfikacja bazy x...";
+            else label.innerText = "System gotowy!";
+            if (p >= 100) {
+                clearInterval(interval);
+                setTimeout(() => {
+                    document.getElementById('loading-screen').style.opacity = '0';
+                    setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 800);
+                }, 500);
+            }
+        }, szybkosc);
+    }
+
+    function ustawTlo(style) {
+        const bg = document.getElementById('app-bg');
+        if (style.startsWith("http")) {
+            bg.style.backgroundImage = `url('${style}')`;
+        } else {
+            bg.style.background = style;
+        }
+        bg.style.backgroundSize = "cover";
+        bg.style.backgroundPosition = "center";
+        bg.style.backgroundAttachment = "fixed";
+    }
+
+    function inicjalizujMenuMotywow() {
+        const kolibryGrid = document.getElementById('grid-kolibry');
+        for(let k in MOTYWY_KOLIBRY) {
+            let b = document.createElement('div'); b.className = 't-btn'; b.style.background = MOTYWY_KOLIBRY[k];
+            b.onclick = () => ustawTlo(MOTYWY_KOLIBRY[k]); b.innerText = k; kolibryGrid.appendChild(b);
+        }
+
+        const customGrid = document.getElementById('grid-custom');
+        for(let nazwa in MOJE_WLASNE_LINKI) {
+            let link = MOJE_WLASNE_LINKI[nazwa];
+            if (link !== "TU_WKLEJ_LINK" && link !== "") {
+                let b = document.createElement('div'); b.className = 't-btn'; 
+                b.style.background = `url('${link}')`;
+                b.onclick = () => ustawTlo(link); b.innerText = nazwa; customGrid.appendChild(b);
+            }
+        }
+
+        const charGrid = document.getElementById('grid-chars');
+        for(let p in MOTYWY_POSTACI) {
+            let b = document.createElement('div'); b.className = 't-btn'; b.style.background = MOTYWY_POSTACI[p];
+            b.onclick = () => ustawTlo(MOTYWY_POSTACI[p]); b.innerText = p; charGrid.appendChild(b);
+        }
+        const ekstraGrid = document.getElementById('grid-ekstra');
+        for(let k in MOTYWY_EKSTRAKLASA) {
+            let b = document.createElement('div'); b.className = 't-btn'; b.style.background = MOTYWY_EKSTRAKLASA[k];
+            b.onclick = () => ustawTlo(MOTYWY_EKSTRAKLASA[k]); b.innerText = k; ekstraGrid.appendChild(b);
+        }
+        const pierwszaGrid = document.getElementById('grid-pierwsza');
+        for(let k in MOTYWY_PIERWSZA_LIGA) {
+            let b = document.createElement('div'); b.className = 't-btn'; b.style.background = MOTYWY_PIERWSZA_LIGA[k];
+            b.onclick = () => ustawTlo(MOTYWY_PIERWSZA_LIGA[k]); b.innerText = k; pierwszaGrid.appendChild(b);
+        }
+        const laligaGrid = document.getElementById('grid-laliga');
+        for(let k in MOTYWY_LALIGA) {
+            let b = document.createElement('div'); b.className = 't-btn'; b.style.background = MOTYWY_LALIGA[k];
+            b.onclick = () => ustawTlo(MOTYWY_LALIGA[k]); b.innerText = k; laligaGrid.appendChild(b);
+        }
+        const sysGrid = document.getElementById('grid-sys');
+        for(let s in MOTYWY_SYS) {
+            let b = document.createElement('div'); b.className = 't-btn'; b.style.background = MOTYWY_SYS[s];
+            b.onclick = () => ustawTlo(MOTYWY_SYS[s]); b.innerText = s; sysGrid.appendChild(b);
+        }
+    }
+
+    const daneGry = {
+        "Mushroom": ["Mario Kart Stadium", "Water Park", "Sweet Sweet Canyon", "Thwomp Ruins"],
+        "Flower": ["Mario Circuit", "Toad Harbour", "Twisted Mansion", "Shy Guy Falls"],
+        "Star": ["Sunshine Airport", "Dolphin Shoals", "Electrodrome", "Mount Wario"],
+        "Special": ["Cloudtop Cruise", "Bone-Dry Dunes", "Bowser's Castle", "Rainbow Road"],
+        "Shell": ["Moo Moo Meadows", "GBA Mario Circuit", "Cheep Cheep Beach", "Luigi's Mansion"],
+        "Banana": ["Donut Plains 3", "Royal Raceway", "DK Jungle", "Yoshi Valley"],
+        "Leaf": ["Wario Stadium", "Sherbet Land", "Music Park", "Tick-Tock Clock"],
+        "Lightning": ["Piranha Plant Slide", "Grumble Volcano", "Rainbow Road (N64)", "Tick-Tock Clock"],
+        "Egg": ["Yoshi Circuit", "Excitebike Arena", "Dragon Driftway", "Mute City"],
+        "Triforce": ["Wario's Gold Mine", "SNES Rainbow Road", "Ice Ice Outpost", "Hyrule Circuit"],
+        "Crossing": ["Baby Park", "Cheese Land", "Wild Woods", "Animal Crossing"],
+        "Bell": ["Neo Bowser City", "Ribbon Road", "Super Bell Subway", "Big Blue"],
+        "Golden Dash": ["Paris Promenade", "Toad Circuit", "Choco Mountain", "Coconut Mall"],
+        "Lucky Cat": ["Tokyo Blur", "Shroom Ridge", "Sky Garden", "Ninja Hideaway"],
+        "Turnip": ["New York Minute", "Mario Circuit 3", "Kalimari Desert", "Waluigi Pinball"],
+        "Propeller": ["Sydney Sprint", "Snow Land", "Mushroom Gorge", "Sky-High Sundae"],
+        "Rock": ["London Loop", "Boo Lake", "Rock Rock Mountain", "Maple Treeway"],
+        "Moon": ["Berlin Byways", "Peach Gardens", "Merry Mountain", "Rainbow Road (3DS)"],
+        "Fruit": ["Amsterdam Drift", "Riverside Park", "DK Summit", "Yoshi's Island"],
+        "Boomerang": ["Bangkok Rush", "Mario Circuit (DS)", "Waluigi Stadium", "Singapore Speedway"],
+        "Feather": ["Athens Dash", "Daisy Cruiser", "Moonview Highway", "Squeaky Clean Sprint"],
+        "Cherry": ["Los Angeles Laps", "Sunset Wilds", "Koopa Cape", "Vancouver Velocity"],
+        "Acorn": ["Rome Avanti", "DK Mountain", "Daisy Circuit", "Piranha Plant Cove"],
+        "Spiny": ["Madrid Drive", "Rosalina's Ice World", "Bowser Castle 3", "Wii Rainbow Road"]
+    };
+
+    const rodzina = ["Mama", "Tata", "Miłosz", "Mikołaj"];
+    let zawodnicy = [];
+
+    function inicjalizuj() {
+        const zapis = localStorage.getItem(STORAGE_KEY);
+        zawodnicy = zapis ? JSON.parse(zapis) : rodzina.map(n => ({ name: n, medale: [0,0,0,0], elo: 1000, historia: [] }));
+        const nav = document.getElementById('cup-nav');
+        for (const cup in daneGry) {
+            const b = document.createElement('div'); b.style = "padding:8px; color:#aaa; cursor:pointer; font-size:0.75em; border-bottom:1px solid rgba(255,255,255,0.05);";
+            b.innerText = "🏆 " + cup; b.onclick = () => {
+                const target = document.getElementById(`header-${cup}`);
+                if(target) target.scrollIntoView({ behavior: 'smooth' });
+            };
+            nav.appendChild(b);
+        }
+        document.getElementById('select-zawodnik').innerHTML = rodzina.map(n => `<option value="${n}">${n}</option>`).join('');
+        inicjalizujMenuMotywow();
+        ustawTlo(MOTYWY_SYS["Deep Space"]);
+        odswiezRanking();
+        odswiezMenuTras();
+        startLoading();
+    }
+
+    function toggleThemeMenu() { document.getElementById('theme-menu').classList.toggle('active'); }
+
+    function odswiezRanking() {
+
+    // 🔥 Ranking olimpijski: złoto > srebro > brąz > platyna
+    zawodnicy.sort((a, b) => {
+        if (b.medale[0] !== a.medale[0]) return b.medale[0] - a.medale[0];
+        if (b.medale[1] !== a.medale[1]) return b.medale[1] - a.medale[1];
+        if (b.medale[2] !== a.medale[2]) return b.medale[2] - a.medale[2];
+        if (b.medale[3] !== a.medale[3]) return b.medale[3] - a.medale[3];
+        return 0;
+    });
+
+    document.getElementById('ranking-body').innerHTML =
+        zawodnicy.map((z, i) => `
+            <tr class="gracz-row" onclick="pokazHistorie('${z.name}')">
+                <td>${i+1}</td>
+                <td><b>${z.name}</b></td>
+                <td style="color:gold">${z.medale[0]}</td>
+                <td style="color:silver">${z.medale[1]}</td>
+                <td style="color:#cd7f32">${z.medale[2]}</td>
+                <td style="color:lightgreen">${z.medale[3]}</td>
+                <td class="elo-cell">${z.elo.toFixed(1)}</td>
+            </tr>
+        `).join('');
+}
+
+
+    
+
+    function pokazHistorie(imie) {
+        const z = zawodnicy.find(x => x.name === imie);
+        if(!z || z.historia.length === 0) return alert("Brak wyścigów!");
+        document.getElementById('historia-tytul').innerText = "KIEROWCA: " + imie.toUpperCase();
+        document.getElementById('lista-osiagniec').innerHTML = z.historia.map(h => {
+            const imgUrl = IKONY_TRAS[h.gra];
+            const iconHtml = (imgUrl && imgUrl !== "TU_WKLEJ_LINK" && imgUrl !== "") 
+                ? `<img src="${imgUrl}" class="trasa-img" onerror="this.outerHTML='<div class=\'trasa-img\'>🏆</div>'">` 
+                : `<div class="trasa-img">🏆</div>`;
+            return `
+                <div class="karta-wyscigu" style="border-left: 5px solid ${h.v == 1 ? 'gold' : h.v == 0.6 ? 'silver' : h.v == 0.3 ? '#cd7f32' : 'lightgreen'}">
+                    ${iconHtml}
+                    <div style="display: flex; flex-direction: column; padding: 5px;">
+                        <span style="font-weight:bold; font-size:0.9em;">${h.gra}</span>
+                        <span style="font-size:0.7em; color:gold;">${h.v == 1 ? '🥇 ZŁOTO' : h.v == 0.6 ? '🥈 SREBRO' : h.v == 0.3 ? '🥉 BRĄZ' : '💿 PLATYNA'}</span>
+                        <span style="font-size:0.6em; color:#ccc;">${h.data}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        document.getElementById('panel-historii').style.display = 'block';
+    }
+
+    function odswiezMenuTras() {
+        const imie = document.getElementById('select-zawodnik').value;
+        const gracz = zawodnicy.find(z => z.name === imie);
+        let html = "";
+        for (const [cup, tracks] of Object.entries(daneGry)) {
+            html += `<div class="cup-header" id="header-${cup}">${cup} Cup</div>`;
+            tracks.forEach(t => {
+                const hist = gracz.historia.filter(h => h.gra === t);
+                let klasa = (hist.length > 0) ? (hist[0].v === 1.0 ? "bg-gold" : hist[0].v === 0.6 ? "bg-silver" : hist[0].v === 0.3 ? "bg-bronze" : "bg-platinum") : "";
+                html += `<div class="track-item ${klasa} ${wybranaTrasa === t ? 'selected' : ''}" onclick="wybierzTrase('${t.replace(/'/g, "\\'")}')">${t}</div>`;
+            });
+        }
+        document.getElementById('track-list-container').innerHTML = html;
+    }
+
+    function wybierzTrase(t) { wybranaTrasa = t; odswiezMenuTras(); }
+
+    function przyznajMedal() {
+        const imie = document.getElementById('select-zawodnik').value;
+        const score = parseFloat(document.getElementById('select-medal').value);
+        if(!wybranaTrasa) return alert("Wybierz trasę!");
+        const gracz = zawodnicy.find(z => z.name === imie);
+        const expected = 1 / (1 + Math.pow(10, (1000 - gracz.elo) / 400));
+        gracz.elo = Math.round((gracz.elo + K_FACTOR * (score - expected)) * 10) / 10;
+        if(score === 1.0) gracz.medale[0]++; 
+        else if(score === 0.6) gracz.medale[1]++; 
+        else if(score === 0.3) gracz.medale[2]++; 
+        else gracz.medale[3]++;
+        gracz.historia.unshift({ gra: wybranaTrasa, v: score, data: new Date().toLocaleDateString() });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(zawodnicy));
+        odswiezRanking(); odswiezMenuTras();
+        alert("Wynik zapisany!");
+    }
+
+    window.onload = inicjalizuj;
+</script>
+</body>
+</html>
