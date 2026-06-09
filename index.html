@@ -3,562 +3,1621 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MK8D - PRO STATUS SYSTEM GOLD</title>
+    <title>Mundial 2026 Typer - Profil Rodzinny</title>
     <style>
-        :root { 
-            --mk-red: #e74c3c; 
-            --bg-dark: #0b0b0b; 
-            --panel-bg: rgba(20, 20, 20, 0.2);
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
-        
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background-color: var(--bg-dark); 
-            color: #fff; 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            overflow-x: hidden; 
-        }
-        
-        #app-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover; background-position: center;
-            filter: brightness(0.5) blur(1px);
-            z-index: -2;
-            transition: all 0.8s ease-in-out;
+        /* Zmienne CSS do dynamicznej zmiany motywów strony */
+        :root {
+            --bg-color: #121212;
+            --text-color: #ffffff;
+            --container-bg: #1e1e1e;
+            --border-color: #333333;
+            --input-bg: #333333;
+            --input-border: #555555;
+            --window-bg: #151515;
+            --btn-secondary: #2a2a2a;
+            --btn-secondary-hover: #444444;
+            --table-th: #2a2a2a;
+            --profile-color: #00ff00;
         }
 
-        /* --- NOWA SEKCJA DLA WIDOKU IPAD NA TELEFONIE --- */
-        @media (max-width: 768px) {
-            body { flex-direction: column; align-items: center; }
-            
-            .sidebar { 
-                position: relative !important; 
-                width: 90% !important; 
-                height: 80px !important; 
-                left: 0 !important; 
-                top: 10px !important; 
-                display: flex !important; 
-                flex-direction: row !important; 
-                overflow-x: auto !important; 
-                overflow-y: hidden !important;
-                white-space: nowrap;
-                margin-bottom: 20px;
-            }
-            .sidebar h4 { display: none; } /* Chowa napis na małym ekranie dla miejsca */
-            .sidebar div { display: inline-block !important; margin-right: 10px; border-bottom: none !important; border-right: 1px solid var(--glass-border); padding: 15px !important; }
-
-            .container { 
-                margin: 10px !important; 
-                width: 95% !important; 
-                padding: 15px !important; 
-                box-sizing: border-box;
-            }
-
-            table { font-size: 0.8em; }
-            .historia-grid { grid-template-columns: 1fr 1fr !important; }
-            .theme-btn-toggle { top: 10px; right: 10px; padding: 5px 10px; font-size: 0.7em; }
+        /* Klasa dla motywu jasnego strony */
+        .light-theme {
+            --bg-color: #f0f2f5;
+            --text-color: #1a1a1a;
+            --container-bg: #ffffff;
+            --border-color: #cccccc;
+            --input-bg: #ffffff;
+            --input-border: #bbbbbb;
+            --window-bg: #f9f9f9;
+            --btn-secondary: #e4e6eb;
+            --btn-secondary-hover: #d8dadf;
+            --table-th: #f0f2f5;
         }
-        /* --- KONIEC SEKCJI IPAD --- */
-
-        /* MENU MOTYWÓW */
-        #theme-menu {
-            position: fixed; right: -350px; top: 0; width: 320px; height: 100%;
-            background: rgba(0, 0, 0, 0.4); border-left: 1px solid var(--mk-red);
-            z-index: 1000; padding: 20px; transition: 0.5s ease; overflow-y: auto;
-            backdrop-filter: blur(25px);
+        
+        /* Klasa dla motywu gradientowego */
+        .gradient-theme {
+            --bg-color: linear-gradient(135deg, #ff8c00, #ffd700);
+            --text-color: #000000;
+            --container-bg: rgba(255, 255, 255, 0.8);
+            --border-color: #c8860b;
+            --input-bg: #ffffff;
+            --input-border: #b8860b;
+            --window-bg: rgba(255, 255, 255, 0.6);
+            --btn-secondary: #ffdead;
+            --btn-secondary-hover: #deb887;
+            --table-th: rgba(255, 255, 255, 0.9);
         }
-        #theme-menu.active { right: 0; }
-        .theme-btn-toggle { position: fixed; right: 20px; top: 20px; z-index: 1001; background: var(--mk-red); color: white; border: none; padding: 10px 15px; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
-        
-        .theme-section h4 { color: gold; font-size: 0.75em; text-transform: uppercase; border-bottom: 1px solid var(--glass-border); padding-bottom: 5px; margin-top: 25px; letter-spacing: 1px; }
-        .grid-themes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-height: 250px; overflow-y: auto; padding-right: 5px; }
-        
-        .t-btn { height: 40px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.65em; font-weight: bold; overflow: hidden; color: white; text-shadow: 1px 1px 2px #000; text-align: center; padding: 4px; transition: 0.2s; line-height: 1.1; background-size: cover !important; background-position: center !important; }
-        .t-btn:hover { border-color: #fff; transform: scale(1.05); }
 
-        /* SPLASH SCREEN */
-        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease-in-out; }
-        .loader-container { text-align: center; width: 80%; max-width: 500px; }
-        #percent-text { font-size: 4em; font-weight: 900; text-shadow: 0 0 20px var(--mk-red); margin-bottom: 10px; }
-        .progress-bar-bg { width: 100%; height: 15px; background: rgba(255,255,255,0.1); border-radius: 50px; overflow: hidden; border: 1px solid #444; }
-        #progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #e74c3c, gold); transition: width 0.1s linear; }
-        #status-label { color: gold; margin-top: 15px; text-transform: uppercase; font-size: 0.85em; letter-spacing: 2px; font-weight: bold; min-height: 1.2em; }
+        /* Klasa dla motywu serduszkowego */
+        .hearts-theme {
+            --bg-color: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #ff5e62 100%);
+            --text-color: #4a0e0e;
+            --container-bg: rgba(255, 255, 255, 0.9);
+            --border-color: #ff5e62;
+            --input-bg: #fff0f5;
+            --input-border: #ff5e62;
+            --window-bg: rgba(255, 255, 255, 0.7);
+            --btn-secondary: #ffb7c5;
+            --btn-secondary-hover: #ff91a4;
+            --table-th: rgba(255, 255, 255, 0.8);
+        }
 
-        /* GŁÓWNY INTERFEJS */
-        .sidebar { position: fixed; left: 15px; top: 5%; bottom: 5%; width: 180px; background: var(--panel-bg); padding: 10px; border-radius: 15px; border: 1px solid var(--glass-border); overflow-y: auto; backdrop-filter: blur(15px); }
-        .container { max-width: 900px; width: 100%; margin: 20px 20px 20px 220px; background: var(--panel-bg); padding: 25px; border-radius: 20px; border: 1px solid var(--glass-border); border-top: 5px solid var(--mk-red); backdrop-filter: blur(15px); position: relative; }
-        
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { padding: 12px; border-bottom: 1px solid var(--glass-border); text-align: center; }
-        .elo-cell { color: #2ecc71; font-weight: bold; font-family: monospace; font-size: 1.2em; }
-        
-        #panel-historii { margin-top: 20px; padding: 20px; background: rgba(0,0,0,0.4); border-radius: 15px; border: 1px solid gold; display: none; backdrop-filter: blur(20px); }
-        .historia-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 15px; }
-        .karta-wyscigu { display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; border: 1px solid var(--glass-border); }
-        .trasa-img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 1px solid #555; background: #000; display: flex; align-items: center; justify-content: center; font-size: 1.2em; }
+        /* Nowa klasa dla motywu ognistego strony (od 70 punktów) */
+        .fire-page-theme {
+            --bg-color: linear-gradient(135deg, #ff3300 0%, #ff6600 50%, #ffaa00 100%);
+            --text-color: #ffffff;
+            --container-bg: rgba(20, 5, 0, 0.85);
+            --border-color: #ff4400;
+            --input-bg: #331100;
+            --input-border: #ff6600;
+            --window-bg: rgba(40, 10, 0, 0.7);
+            --btn-secondary: #ff4500;
+            --btn-secondary-hover: #ff6347;
+            --table-th: rgba(255, 69, 0, 0.4);
+        }
 
-        .bg-gold { background-color: rgba(255, 215, 0, 0.4) !important; color: #fff !important; }
-        .bg-silver { background-color: rgba(192, 192, 192, 0.4) !important; color: #fff !important; }
-        .bg-bronze { background-color: rgba(205, 127, 50, 0.4) !important; color: #fff !important; }
-        .bg-platinum { background-color: rgba(144, 238, 144, 0.4) !important; color: #fff !important; }
+        /* Klasa dla darmowego motywu flagi Andory */
+        .andorra-theme {
+            --bg-color: linear-gradient(90deg, #1a47a2 0%, #1a47a2 33.33%, #fed100 33.33%, #fed100 66.66%, #d3122c 66.66%, #d3122c 100%);
+            --text-color: #000000;
+            --container-bg: rgba(255, 255, 255, 0.95);
+            --border-color: #fed100;
+            --input-bg: #ffffff;
+            --input-border: #1a47a2;
+            --window-bg: rgba(255, 255, 255, 0.85);
+            --btn-secondary: #fed100;
+            --btn-secondary-hover: #e0b800;
+            --table-th: rgba(26, 71, 162, 0.2);
+        }
+
+        /* Animacja pojawiania się */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+
+        /* Animacja pasów */
+        @keyframes stripesMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 40px; }
+        }
+        .stripes-animation {
+            background: repeating-linear-gradient(45deg, rgba(255,255,255,0.05), rgba(255,255,255,0.05) 10px, rgba(0,0,0,0.05) 10px, rgba(0,0,0,0.05) 20px);
+            animation: stripesMove 2s linear infinite;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            letter-spacing: 1px;
+            color: var(--text-color);
+        }
+
+        /* Ekran wyboru profilu */
+        .profile-menu {
+            text-align: center;
+        }
+        .profile-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .profile-btn {
+            background: #1e1e1e;
+            color: #fff;
+            border: 2px solid #333;
+            padding: 20px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .profile-btn:hover {
+            border-color: #00ff00;
+            transform: translateY(-3px);
+        }
+        .profile-btn.admin-btn:hover {
+            border-color: #ff5555;
+        }
         
-        #track-list-container { height: 350px; overflow-y: scroll; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); border-radius: 8px; margin: 10px 0; }
-        .track-item { padding: 10px; border-bottom: 1px solid var(--glass-border); cursor: pointer; font-size: 0.9em; transition: 0.2s; }
-        .track-item:hover { background: rgba(255,255,255,0.1); }
-        .track-item.selected { background: var(--mk-red) !important; border: 1px solid #fff; }
+        /* Górny pasek kontrolny */
+        .top-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: var(--btn-secondary);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 8px 15px;
+            font-size: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: var(--btn-secondary-hover);
+        }
+
+        /* Menu Planetarne rozbudowane o dwa okna */
+        .planet-menu-container {
+            position: relative;
+            display: inline-block;
+        }
         
-        .cup-header { background: rgba(0,0,0,0.6); color: gold; padding: 5px; font-weight: bold; position: sticky; top: 0; font-size: 0.8em; backdrop-filter: blur(5px); }
-        .controls { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin-top: 20px; border: 1px solid var(--glass-border); }
-        select, button { padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.5); color: white; width: 100%; border: 1px solid var(--glass-border); }
-        button.add-btn { background: var(--mk-red); border: none; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.3s; }
-        button.add-btn:hover { filter: brightness(1.2); box-shadow: 0 0 15px rgba(231, 76, 60, 0.5); }
+        .planet-btn {
+            font-size: 26px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.2s ease;
+            user-select: none;
+        }
+        .planet-btn:hover {
+            transform: scale(1.15) rotate(15deg);
+        }
+
+        .planet-dropdown {
+            position: absolute;
+            right: 0;
+            top: 45px;
+            background: var(--container-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+            z-index: 100;
+            min-width: 160px;
+            text-align: left;
+        }
+
+        .planet-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+            margin-bottom: 4px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2px;
+        }
+
+        .planet-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Kwadraciki wyboru */
+        .theme-square {
+            width: 25px;
+            height: 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.1s, border-color 0.2s;
+            box-sizing: border-box;
+        }
+        .theme-square:hover {
+            transform: scale(1.1);
+        }
+        .square-black {
+            background-color: #121212;
+            border: 2px solid #555;
+        }
+        .square-white {
+            background-color: #ffffff;
+            border: 2px solid #ccc;
+        }
+        .square-gradient {
+            background: linear-gradient(135deg, #ff8c00, #ffd700);
+            border: 2px solid #b8860b;
+        }
+        .square-hearts {
+            background: linear-gradient(135deg, #ff9a9e, #ff5e62);
+            border: 2px solid #ff5e62;
+        }
+        .square-fire-theme {
+            background: linear-gradient(135deg, #ff3300, #ffaa00);
+            border: 2px solid #ff4400;
+        }
+        .square-andorra {
+            background: linear-gradient(90deg, #1a47a2 33.33%, #fed100 33.33%, #fed100 66.66%, #d3122c 66.66%);
+            border: 2px solid #fed100;
+        }
+        .square-fire {
+            background: linear-gradient(135deg, #ff3300, #ffaa00);
+            border: 2px solid #ffcc00;
+        }
+        .square-blue-white {
+            background: linear-gradient(135deg, #00c6ff, #ffffff);
+            border: 2px solid #0077aa;
+        }
+        .square-yellow {
+            background-color: #ffd700;
+            border: 2px solid #ccaa00;
+        }
+        .square-red {
+            background-color: #ff0000;
+            border: 2px solid #aa0000;
+        }
+        .square-pink {
+            background-color: #ff69b4;
+            border: 2px solid #ff1493;
+        }
+        .square-default-counter {
+            background-color: #00ff00;
+            border: 2px solid #00aa00;
+        }
+        .square-white-counter {
+            background-color: #ffffff;
+            border: 2px solid #cccccc;
+        }
+        .square-orange {
+            background-color: #ffaa00;
+            border: 2px solid #cc8800;
+        }
+        
+        .square-lock {
+            font-size: 11px;
+            background: #222;
+            color: #ff5555;
+            border: 1px dashed #ff5555;
+            padding: 3px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            cursor: not-allowed;
+            user-select: none;
+            font-weight: bold;
+        }
+
+        .square-lock-fire-theme, .square-lock-fire, .square-lock-blue-white, .square-lock-yellow, .square-lock-red, .square-lock-hearts, .square-lock-pink, .square-lock-stripes {
+            width: 25px;
+            height: 25px;
+            border-radius: 4px;
+            background: #222;
+            border: 1px dashed #ff5555;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: not-allowed;
+            position: relative;
+            overflow: hidden;
+        }
+        .square-lock-fire-theme::before { content: '🔥'; font-size: 10px; filter: grayscale(100%); opacity: 0.5; }
+        .square-lock-fire::before { content: '🔥'; font-size: 10px; filter: grayscale(100%); opacity: 0.5; }
+        .square-lock-blue-white::before { content: '❄️'; font-size: 10px; filter: grayscale(100%); opacity: 0.5; }
+        .square-lock-yellow::before { content: '✨'; font-size: 10px; filter: grayscale(100%); opacity: 0.5; }
+        .square-lock-red::before { content: '❤️'; font-size: 10px; filter: grayscale(100%); opacity: 0.5; }
+        .square-lock-hearts::before { content: '💖'; font-size: 10px; filter: grayscale(100%); opacity: 0.5; }
+        .square-lock-pink::before { content: '🌸'; font-size: 10px; filter: grayscale(100%); opacity: 0.5; }
+        .square-lock-stripes::before { content: '🦓'; font-size: 10px; filter: grayscale(100%); opacity: 0.5; }
+        .square-lock-fire-theme span, .square-lock-fire span, .square-lock-blue-white span, .square-lock-yellow span, .square-lock-red span, .square-lock-hearts span, .square-lock-pink span, .square-lock-stripes span { font-size: 7px; color: #ff5555; font-weight: bold; margin-top: -2px; }
+
+        .theme-square.active-square {
+            border: 2.5px solid #00ff00 !important;
+            box-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+        }
+        
+        /* Submenu */
+        .submenu-selector {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            width: 100%;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .submenu-btn {
+            flex: 1;
+            min-width: 75px;
+            background: var(--btn-secondary);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 10px 2px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .submenu-btn:hover {
+            background: var(--btn-secondary-hover);
+        }
+        .submenu-btn.active {
+            background: #00ff00;
+            color: #000;
+            border-color: #00ff00;
+        }
+
+        /* Kontenery główne */
+        .container {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            padding: 25px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background-color: var(--container-bg);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            max-width: 520px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        
+        .window-box {
+            background: var(--window-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+            gap: 20px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .match-card {
+            background: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .match-box {
+            font-size: 20px;
+            font-weight: bold;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .teams { display: flex; align-items: center; gap: 10px; }
+        .flag { font-size: 28px; }
+        .inputs-bet, .admin-inputs {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 5px;
+            justify-content: center;
+        }
+        .inputs-bet input, .admin-inputs input {
+            width: 50px;
+            height: 40px;
+            font-size: 20px;
+            text-align: center;
+            background: var(--input-bg);
+            color: var(--text-color);
+            border: 1px solid var(--input-border);
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .btn {
+            background-color: #00ff00;
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        .btn:hover { background-color: #00cc00; }
+        .status { font-size: 13px; margin-top: 10px; color: var(--text-color); opacity: 0.7; }
+        
+        /* STYLE DLA LICZNIKA PUNKTÓW */
+        .big-points-counter {
+            font-size: 72px;
+            font-weight: bold;
+            margin: 10px 0;
+            transition: transform 0.3s, cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .counter-style-default {
+            color: #00ff00;
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+        }
+        .counter-style-white {
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+        .counter-style-fire {
+            background: linear-gradient(45deg, #ff3300, #ffaa00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(255, 68, 0, 0.7));
+            animation: pulse-fire 1.5s infinite alternate;
+        }
+        .counter-style-blue-white {
+            background: linear-gradient(45deg, #00c6ff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(0, 119, 170, 0.7));
+        }
+
+        @keyframes pulse-fire {
+            0% { transform: scale(1); filter: drop-shadow(0 0 10px #ff3300); }
+            100% { transform: scale(1.05); filter: drop-shadow(0 0 25px #ffaa00); }
+        }
+
+        .points-label {
+            font-size: 18px;
+            color: var(--text-color);
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Selektory i tabele */
+        .app-select {
+            padding: 10px;
+            background: var(--btn-secondary);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            width: 80%;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .scoreboard {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .scoreboard th, .scoreboard td {
+            border: 1px solid var(--border-color);
+            padding: 10px 6px;
+            text-align: center;
+            font-size: 13px;
+        }
+        .scoreboard th { background-color: var(--table-th); }
+        
+        /* Panel Admina */
+        .admin-panel {
+            background-color: #1a1a24;
+            border: 2px dashed #ff5555;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .admin-panel h3 { margin-top: 0; color: #ff5555; }
+        .btn-check { background-color: #ff5555; color: white; }
+        .btn-check:hover { background-color: #cc3333; }
+        
+        .hidden { display: none !important; }
+        
+        /* Styl okna FORMA */
+        .forma-box {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: bold;
+            color: var(--profile-color);
+        }
     </style>
 </head>
 <body>
 
-<div id="app-bg"></div>
-
-<button class="theme-btn-toggle" onclick="toggleThemeMenu()">🎨 MOTYWY</button>
-<div id="theme-menu">
-    <h3 style="margin-top:0">PERSONALIZACJA</h3>
-
-    <div class="theme-section">
-        <h4>Kolibry - Nowość</h4>
-        <div class="grid-themes" id="grid-kolibry"></div>
-    </div>
-
-    <div class="theme-section">
-        <h4>Moje Linki (z kodu)</h4>
-        <div class="grid-themes" id="grid-custom"></div>
-    </div>
-
-    <div class="theme-section">
-        <h4>Postacie Mario Kart (48)</h4>
-        <div class="grid-themes" id="grid-chars"></div>
-    </div>
-    <div class="theme-section">
-        <h4>Ekstraklasa - Motywy</h4>
-        <div class="grid-themes" id="grid-ekstra"></div>
-    </div>
-    <div class="theme-section">
-        <h4>Pierwsza Liga - Motywy</h4>
-        <div class="grid-themes" id="grid-pierwsza"></div>
-    </div>
-    <div class="theme-section">
-        <h4>La Liga - Motywy</h4>
-        <div class="grid-themes" id="grid-laliga"></div>
-    </div>
-    <div class="theme-section">
-        <h4>Systemowe (44)</h4>
-        <div class="grid-themes" id="grid-sys"></div>
+<div id="profile-menu-section" class="profile-menu">
+    <h1>🏆 MUNDIAL 2026 Typer</h1>
+    <div class="profile-selector">
+        <button class="profile-btn" onclick="selectProfile('mama')">👩 Mama</button>
+        <button class="profile-btn" onclick="selectProfile('tata')">👨 Tata</button>
+        <button class="profile-btn" onclick="selectProfile('mikolaj')">👦 Mikołaj</button>
+        <button class="profile-btn" onclick="selectProfile('milosz')">👶 Miłosz</button>
+        <button class="profile-btn" onclick="selectProfile('natan')">👦 Natan</button>
+        <button class="profile-btn admin-btn" onclick="selectProfile('admin')">⚙️ Admin</button>
     </div>
 </div>
 
-<div id="loading-screen">
-    <div class="loader-container">
-        <div id="percent-text">0%</div>
-        <div class="progress-bar-bg"><div id="progress-bar-fill"></div></div>
-        <div id="status-label">Inicjalizacja...</div>
-    </div>
-</div>
+<div id="user-view" class="container hidden">
+    <div class="top-controls">
+        <button class="back-btn" onclick="backToProfiles()">⬅️ Powrót</button>
+        
+        <div class="planet-menu-container">
+            <button class="planet-btn" onclick="togglePlanetMenu()" title="Planetarium">🪐</button>
+            <div id="planet-dropdown-menu" class="planet-dropdown hidden">
+                
+                <div class="planet-section-title">Animacje</div>
+                <div class="planet-row">
+                    <label style="font-size: 13px; cursor: pointer;">
+                        <input type="checkbox" id="anim-toggle" onchange="toggleAnim(this.checked)"> Włącz animacje
+                    </label>
+                </div>
+                <div class="planet-row">
+                    <div id="stripes-wrapper"></div>
+                    <label style="font-size: 13px; cursor: pointer;">
+                        <input type="checkbox" id="stripes-toggle" onchange="toggleStripes(this.checked)"> Włącz pasy
+                    </label>
+                </div>
 
-<div class="sidebar" id="cup-nav">
-    <h4 style="text-align:center;">🏆 PUCHARY</h4>
-</div>
+                <div class="planet-section-title" style="margin-top: 10px;">Motyw Strony</div>
+                <div class="planet-row">
+                    <div id="sq-dark" class="theme-square square-black" onclick="setUserTheme('dark')" title="Ciemna Strona"></div>
+                    <div id="sq-light" class="theme-square square-white" onclick="setUserTheme('light')" title="Jasna Strona"></div>
+                    <div id="sq-gradient" class="theme-square square-gradient" onclick="setUserTheme('gradient')" title="Gradient (do 16.06)"></div>
+                    <div id="hearts-wrapper"></div>
+                    <div id="fire-theme-wrapper"></div>
+                    <div id="andorra-wrapper"></div>
+                </div>
+                <div style="font-size: 9px; margin-top: 2px;">*Gradient znika 16.06. Serduszka do 20.06.</div>
 
-<div class="container">
-    <h1>🏎️ MK8D <span style="font-weight: 100;">PRO SYSTEM</span></h1>
-    <table id="main-ranking">
-        <thead><tr><th>Poz.</th><th>Kierowca</th><th>🥇</th><th>🥈</th><th>🥉</th><th>💿</th><th>ELO</th></tr></thead>
-        <tbody id="ranking-body"></tbody>
-    </table>
+                <div class="planet-section-title" style="margin-top: 5px;">Profil</div>
+                <div class="planet-row">
+                    <div id="sq-profile-system" class="theme-square square-black" onclick="setProfileColor('system')" title="Czarny (systemowy)"></div>
+                    <div id="counter-yellow-wrapper"></div>
+                    <div id="counter-red-wrapper"></div>
+                    <div id="counter-pink-wrapper"></div>
+                </div>
 
-    <div id="panel-historii">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid gold; padding-bottom: 10px;">
-            <h3 id="historia-tytul" style="color: gold; margin: 0;"></h3>
-            <button onclick="document.getElementById('panel-historii').style.display='none'" style="width: auto; padding: 5px 15px; font-size: 0.8em;">X</button>
+                <div class="planet-section-title" style="margin-top: 5px;">Motyw Licznika</div>
+                <div class="planet-row">
+                    <div id="sq-counter-default" class="theme-square square-default-counter" onclick="setCounterTheme('default')" title="Standardowy zielony"></div>
+                    <div id="sq-counter-white" class="theme-square square-white-counter" onclick="setCounterTheme('white')" title="Biały licznik"></div>
+                    <div id="counter-fire-wrapper"></div>
+                    <div id="counter-blue-white-wrapper"></div>
+                </div>
+
+                <div class="planet-section-title" style="margin-top: 5px;">Motyw Porównania (Darmowy)</div>
+                <div class="planet-row">
+                    <div id="sq-compare-orange" class="theme-square square-orange" onclick="setCompareTheme('orange')" title="Pomarańczowy (systemowy)"></div>
+                    <div id="sq-compare-red" class="theme-square square-red" onclick="setCompareTheme('red')" title="Czerwony"></div>
+                </div>
+
+            </div>
         </div>
-        <div id="lista-osiagniec" class="historia-grid"></div>
+    </div>
+    
+    <h2 style="margin-top:0;">Profil: <span id="current-profile-name" style="color: var(--profile-color);"></span></h2>
+    
+    <div class="submenu-selector">
+        <button id="sub-btn-matches" class="submenu-btn active" onclick="switchWindow('matches')">⚽ Mecze</button>
+        <button id="sub-btn-table" class="submenu-btn" onclick="switchWindow('table')">📊 Tabela</button>
+        <button id="sub-btn-points" class="submenu-btn" onclick="switchWindow('points')">💎 Punkty</button>
+        <button id="sub-btn-compare" class="submenu-btn" onclick="switchWindow('compare')">🔍 Porównaj</button>
+        <button id="sub-btn-ranking" class="submenu-btn" onclick="switchWindow('ranking')">🥇 Ranking</button>
     </div>
 
-    <div class="controls">
-        <label>1. Kierowca:</label>
-        <select id="select-zawodnik" onchange="odswiezMenuTras()"></select>
-        <label style="margin-top:15px; display:block;">2. Wyścig:</label>
-        <div id="track-list-container"></div>
-        <label style="margin-top:15px; display:block;">3. Wynik:</label>
-        <select id="select-medal">
-            <option value="1.0">🥇 Złoto</option><option value="0.6">🥈 Srebro</option>
-            <option value="0.3">🥉 Brąz</option><option value="0.0">💿 Platyna</option>
-        </select>
-        <button class="add-btn" onclick="przyznajMedal()">ZATWIERDŹ WYŚCIG</button>
+    <div id="window-matches" class="window-box">
+        <div id="card-match1" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇲🇽</span> <span>Meksyk</span> <span>vs</span> <span>RPA</span> <span class="flag">🇿🇦</span>
+                </div>
+                <div id="betting-form-match1" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match1" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match1" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match1')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match1" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+
+        <div id="card-match2" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇰🇷</span> <span>Korea Płd.</span> <span>vs</span> <span>Czechy</span> <span class="flag">🇨🇿</span>
+                </div>
+                <div id="betting-form-match2" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match2" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match2" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match2')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match2" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+
+        <div id="card-match3" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇨🇦</span> <span>Kanada</span> <span>vs</span> <span>BiH</span> <span class="flag">🇧🇦</span>
+                </div>
+                <div id="betting-form-match3" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match3" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match3" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match3')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match3" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+
+        <div id="card-match4" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇺🇸</span> <span>USA</span> <span>vs</span> <span>Paragwaj</span> <span class="flag">🇵🇾</span>
+                </div>
+                <div id="betting-form-match4" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match4" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match4" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match4')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match4" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+
+        <div id="card-match5" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇶🇦</span> <span>Katar</span> <span>vs</span> <span>Szwajcaria</span> <span class="flag">🇨🇭</span>
+                </div>
+                <div id="betting-form-match5" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match5" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match5" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match5')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match5" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+
+        <div id="card-match6" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇧🇷</span> <span>Brazylia</span> <span>vs</span> <span>Maroko</span> <span class="flag">🇲🇦</span>
+                </div>
+                <div id="betting-form-match6" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match6" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match6" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match6')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match6" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+
+        <div id="card-match7" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇭🇹</span> <span>Haiti</span> <span>vs</span> <span>Szkocja</span> <span class="flag">🏴󠁧󠁢󠁳󠁣󠁴󠁿</span>
+                </div>
+                <div id="betting-form-match7" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match7" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match7" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match7')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match7" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+
+        <div id="card-match8" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇦🇺</span> <span>Australia</span> <span>vs</span> <span>Turcja</span> <span class="flag">🇹🇷</span>
+                </div>
+                <div id="betting-form-match8" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match8" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match8" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match8')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match8" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+
+        <div id="card-match9" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇩🇪</span> <span>Niemcy</span> <span>vs</span> <span>Curaçao</span> <span class="flag">🇨🇼</span>
+                </div>
+                <div id="betting-form-match9" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match9" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match9" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match9')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match9" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+
+        <div id="card-match10" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇯🇵</span> <span>Japonia</span> <span>vs</span> <span>Holandia</span> <span class="flag">🇳🇱</span>
+                </div>
+                <div id="betting-form-match10" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match10" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match10" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match10')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match10" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+        
+        <div id="card-match11" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇨🇮</span> <span>WKS</span> <span>vs</span> <span>Ekwador</span> <span class="flag">🇪🇨</span>
+                </div>
+                <div id="betting-form-match11" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match11" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match11" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match11')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match11" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+        
+        <div id="card-match12" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇸🇪</span> <span>Szwecja</span> <span>vs</span> <span>Tunezja</span> <span class="flag">🇹🇳</span>
+                </div>
+                <div id="betting-form-match12" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match12" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match12" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match12')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match12" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+        
+        <div id="card-match13" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇪🇸</span> <span>Hiszpania</span> <span>vs</span> <span>RZP</span> <span class="flag">🇨🇻</span>
+                </div>
+                <div id="betting-form-match13" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match13" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match13" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match13')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match13" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+
+        <div id="card-match14" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇧🇪</span> <span>Belgia</span> <span>vs</span> <span>Egipt</span> <span class="flag">🇪🇬</span>
+                </div>
+                <div id="betting-form-match14" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match14" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match14" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match14')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match14" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+        
+        <div id="card-match15" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇸🇦</span> <span>Arabia Saudyjska</span> <span>vs</span> <span>Urugwaj</span> <span class="flag">🇺🇾</span>
+                </div>
+                <div id="betting-form-match15" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match15" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match15" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match15')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match15" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+        
+        <div id="card-match16" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇮🇷</span> <span>Iran</span> <span>vs</span> <span>Nowa Zelandia</span> <span class="flag">🇳🇿</span>
+                </div>
+                <div id="betting-form-match16" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match16" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match16" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match16')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match16" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+
+        <div id="card-match17" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇫🇷</span> <span>Francja</span> <span>vs</span> <span>Senegal</span> <span class="flag">🇸🇳</span>
+                </div>
+                <div id="betting-form-match17" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match17" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match17" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match17')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match17" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+
+        <div id="card-match18" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇮راق</span> <span>Irak</span> <span>vs</span> <span>Norwegia</span> <span class="flag">🇳🇴</span>
+                </div>
+                <div id="betting-form-match18" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match18" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match18" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match18')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match18" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
+
+        <div id="card-match19" class="match-card">
+            <div class="match-box">
+                <div class="teams">
+                    <span class="flag">🇦🇷</span> <span>Argentyna</span> <span>vs</span> <span>Algieria</span> <span class="flag">🇩🇿</span>
+                </div>
+                <div id="betting-form-match19" class="hidden">
+                    <div class="inputs-bet">
+                        <input type="number" id="bet-home-match19" min="0" placeholder="0">
+                        <span>:</span>
+                        <input type="number" id="bet-away-match19" min="0" placeholder="0">
+                    </div>
+                    <button class="btn" onclick="saveBet('match19')">Zapisz typ</button>
+                </div>
+            </div>
+            <div id="status-match19" class="status">Sprawdzanie stanu meczu...</div>
+        </div>
     </div>
+
+    <div id="window-table" class="window-box hidden">
+        <table class="scoreboard">
+            <thead>
+                <tr>
+                    <th>Mecz</th>
+                    <th>Twój Typ</th>
+                    <th>Wynik</th>
+                    <th>Pkt</th>
+                </tr>
+            </thead>
+            <tbody id="score-table-body">
+                </tbody>
+        </table>
+    </div>
+
+    <div id="window-points" class="window-box hidden">
+        <div class="points-label">Suma Twoich punktów</div>
+        <div id="big-points-value" class="big-points-counter counter-style-default">0</div>
+        <div id="forma-window" class="forma-box hidden"></div>
+        <div style="font-size: 13px; color:#666; margin-top:10px;">Zaktualizowano na żywo</div>
+    </div>
+
+    <div id="window-compare" class="window-box hidden">
+        <div style="font-size: 16px; margin-bottom: 10px; font-weight: bold;">Sprawdź punkty kogoś innego:</div>
+        <select id="compare-profile-select" class="app-select" onchange="updateComparison()">
+            </select>
+        
+        <div id="compare-result-box" class="hidden" style="text-align: center;">
+            <div class="points-label" id="compare-name-label">Punkty użytkownika</div>
+            <div id="compare-points-value" class="big-points-counter counter-style-default" style="color: #ffaa00; text-shadow: 0 0 20px rgba(255, 170, 0, 0.4);">0</div>
+        </div>
+    </div>
+
+    <div id="window-ranking" class="window-box hidden">
+        <div style="font-size: 16px; font-weight: bold; margin-bottom: 5px;">Tabela Rodzinna Typera</div>
+        <table class="scoreboard">
+            <thead>
+                <tr>
+                    <th>Poz</th>
+                    <th>Gracz</th>
+                    <th>3 pkt</th>
+                    <th>1 pkt</th>
+                    <th>0 pkt</th>
+                    <th>Suma Pkt</th>
+                </tr>
+            </thead>
+            <tbody id="ranking-table-body">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="admin-view" class="admin-panel hidden">
+    <button class="back-btn" onclick="backToProfiles()" style="border-color: #ff5555; margin-bottom: 20px;">⬅️ Powrót</button>
+    
+    <h3>⚙️ Panel Autoryzacji Admina</h3>
+    
+    <label for="admin-match-select">Wybierz mecz do rozliczenia:</label><br>
+    <select id="admin-match-select" class="app-select">
+        <option value="match1">🇲🇽 Meksyk vs RPA 🇿🇦</option>
+        <option value="match2">🇰🇷 Korea Południowa vs Czechy 🇨🇿</option>
+        <option value="match3">🇨🇦 Kanada vs BiH 🇧🇦</option>
+        <option value="match4">🇺🇸 USA vs Paragwaj 🇵🇾</option>
+        <option value="match5">🇶🇦 Katar vs Szwajcaria 🇨🇭</option>
+        <option value="match6">🇧🇷 Brazylia vs Maroko 🇲🇦</option>
+        <option value="match7">🇭🇹 Haiti vs Szkocja 🏴󠁧󠁢󠁳󠁣󠁴󠁿</option>
+        <option value="match8">🇦🇺 Australia vs Turcja 🇹🇷</option>
+        <option value="match9">🇩🇪 Niemcy vs Curaçao 🇨🇼</option>
+        <option value="match10">🇯🇵 Japonia vs Holandia 🇳🇱</option>
+        <option value="match11">🇨🇮 WKS vs Ekwador 🇪🇨</option>
+        <option value="match12">🇸🇪 Szwecja vs Tunezja 🇹🇳</option>
+        <option value="match13">🇪🇸 Hiszpania vs RZP 🇨🇻</option>
+        <option value="match14">🇧🇪 Belgia vs Egipt 🇪🇬</option>
+        <option value="match15">🇸🇦 Arabia Saudyjska vs Urugwaj 🇺🇾</option>
+        <option value="match16">🇮🇷 Iran vs Nowa Zelandia 🇳🇿</option>
+        <option value="match17">🇫🇷 Francja vs Senegal 🇸🇳</option>
+        <option value="match18">🇮🇶 Irak vs Norwegia 🇳🇴</option>
+        <option value="match19">🇦🇷 Argentyna vs Algieria 🇩🇿</option>
+    </select>
+    <br>
+
+    <label for="admin-code">Wpisz kod dostępu:</label><br>
+    <input type="text" id="admin-code" placeholder="Wpisz tajny kod..." style="padding: 8px; background: #2a2a2a; border: 1px solid #555; color: white; border-radius: 5px; margin-bottom: 15px; width: 80%; text-align: center;"><br>
+    
+    <label>Wpisz oficjalny wynik meczu:</label>
+    <div class="admin-inputs" style="margin-bottom: 20px;">
+        <input type="number" id="real-home" min="0" placeholder="0">
+        <span>:</span>
+        <input type="number" id="real-away" min="0" placeholder="0">
+    </div>
+
+    <button class="btn btn-check" onclick="verifyAndApplyScore()">✔️ Zatwierdź wynik dla wszystkich</button>
 </div>
 
 <script>
-    const STORAGE_KEY = 'mk8_v11_status_labels';
-    const K_FACTOR = 32;
-    let wybranaTrasa = "";
-
-    const MOTYWY_KOLIBRY = {
-        "Szmaragdowy Koliber": "linear-gradient(135deg, #004d40, #1de9b6, #004d40)",
-        "Rubinowe Gardło": "linear-gradient(135deg, #b71c1c, #424242, #b71c1c)",
-        "Złoty Koliber": "linear-gradient(135deg, #fbc02d, #fff9c4, #f9a825)",
-        "Ametystowy Blask": "linear-gradient(135deg, #4a148c, #ce93d8, #4a148c)",
-        "Błękitny Oceaniczny": "linear-gradient(135deg, #01579b, #81d4fa, #01579b)",
-        "Tropikalny Raj": "linear-gradient(135deg, #ff6f00, #ffecb3, #00c853)",
-        "Nocny Łowca": "linear-gradient(135deg, #212121, #616161, #000000)",
-        "Tęczowy Pióropusz": "linear-gradient(135deg, #f44336, #2196f3, #4caf50, #ffeb3b)",
-        "Srebrzysty Poranek": "linear-gradient(135deg, #cfd8dc, #ffffff, #90a4ae)",
-        "Fioletowy Neon": "linear-gradient(135deg, #aa00ff, #ea80fc, #4a148c)",
-	"Lodigezja": "linear-gradient(135deg, #FFB6C1, #8A2BE2, #7B68EE)"
-    };
-
-    const MOJE_WLASNE_LINKI = {
-        "Mario Kart Stadium": "https://static1.thegamerimages.com/wordpress/wp-content/uploads/wm/2024/08/overview-of-the-first-drift-in-mario-kart-stadium-from-mario-kart-8.jpg",
-        "Water Park": "https://mario.wiki.gallery/images/thumb/4/41/MK8-Course-WaterPark.jpg/1200px-MK8-Course-WaterPark.jpg",
-        "Sweet Sweet Canyon": "https://assets1.ignimgs.com/thumbs/2014/06/06/9dc4d875ce37c6ef356c1f87d826d871-1402083810/frame_0000_1280w.jpg",
-        "Thwomp Ruins": "https://th.bing.com/th/id/OIP.QJL65VL_rqttLjKl70VgXAHaEK?w=322&h=181&c=7&r=0&o=7&pid=1.7&rm=3",
-        "Mario Circuit": "https://i.ytimg.com/vi/VbKEW4MXjL4/maxresdefault.jpg",
-        "Toad Harbour": "https://i.ytimg.com/vi/uUtwPj7oKcw/maxresdefault.jpg",
-        "Twisted Mansion": "https://i.ytimg.com/vi/GdRzBjaQIIk/maxresdefault.jpg",
-        "Shy Guy Falls": "https://i.ytimg.com/vi/7NIoBQNMGj0/maxresdefault.jpg"
-    };
-
-    const IKONY_TRAS = {
-        "Mario Kart Stadium": "https://static1.thegamerimages.com/wordpress/wp-content/uploads/wm/2024/08/overview-of-the-first-drift-in-mario-kart-stadium-from-mario-kart-8.jpg",
-        "Water Park": "https://mario.wiki.gallery/images/thumb/4/41/MK8-Course-WaterPark.jpg/1200px-MK8-Course-WaterPark.jpg",
-        "Sweet Sweet Canyon": "https://assets1.ignimgs.com/thumbs/2014/06/06/9dc4d875ce37c6ef356c1f87d826d871-1402083810/frame_0000_1280w.jpg",
-        "Thwomp Ruins": "https://th.bing.com/th/id/OIP.QJL65VL_rqttLjKl70VgXAHaEK?w=322&h=181&c=7&r=0&o=7&pid=1.7&rm=3",
-        "Mario Circuit": "https://i.ytimg.com/vi/VbKEW4MXjL4/maxresdefault.jpg",
-        "Toad Harbour": "https://i.ytimg.com/vi/uUtwPj7oKcw/maxresdefault.jpg",
-        "Twisted Mansion": "https://i.ytimg.com/vi/GdRzBjaQIIk/maxresdefault.jpg",
-        "Shy Guy Falls": "https://i.ytimg.com/vi/7NIoBQNMGj0/maxresdefault.jpg"
-    };
-
-    const MOTYWY_EKSTRAKLASA = {
-        "Jagiellonia": "repeating-linear-gradient(90deg, #ff0000 0, #ff0000 40px, #ffcc00 40px, #ffcc00 80px)",
-        "Wisła Płock": "linear-gradient(135deg, #0055ff, #ffffff, #0055ff)",
-        "Górnik Zabrze": "linear-gradient(135deg, #ffffff, #0055ff, #ff0000)",
-        "Zagłębie Lubin": "linear-gradient(135deg, #ff6600, #ffffff, #006600)",
-        "Cracovia": "linear-gradient(90deg, #ff0000 50%, #ffffff 50%)",
-        "Lech Poznań": "linear-gradient(135deg, #0055ff, #ffffff)",
-        "Raków": "linear-gradient(135deg, #ff0000, #003399)",
-        "Korona Kielce": "linear-gradient(90deg, #ffcc00 50%, #ff0000 50%)",
-        "Lechia Gdańsk": "linear-gradient(135deg, #ffffff, #009900)",
-        "Radomiak": "linear-gradient(135deg, #006600, #ffffff)",
-        "GKS Katowice": "linear-gradient(90deg, #ffcc00 50%, #000000 50%)",
-        "Piast Gliwice": "linear-gradient(135deg, #0000ff, #ffcc00)",
-        "Pogoń Szczecin": "linear-gradient(135deg, #000066, #800000)",
-        "Motor Lublin": "linear-gradient(135deg, #ffff00, #0055ff)",
-        "Widzew Łódź": "linear-gradient(135deg, #ff0000, #ffffff)",
-        "Arka Gdynia": "linear-gradient(135deg, #ffff00, #0000ff)",
-        "Legia Warszawa": "linear-gradient(135deg, #ffffff, #006600, #000000)",
-        "Bruk-Bet": "linear-gradient(135deg, #ff6600, #000000)"
-    };
-
-    const MOTYWY_PIERWSZA_LIGA = {
-        "Miedź Legnica": "linear-gradient(135deg, #0055ff, #009900, #ffff00)",
-        "Wisła Kraków": "linear-gradient(135deg, #ff0000, #ffffff, #0055ff)",
-        "Ruch Chorzów": "linear-gradient(135deg, #0055ff, #ffffff)",
-        "ŁKS Łódź": "linear-gradient(135deg, #ffffff, #ff0000)",
-        "Stal Rzeszów": "linear-gradient(135deg, #ffffff, #0055ff)",
-        "Polonia Warszawa": "linear-gradient(135deg, #000000, #ff0000, #ffffff)",
-        "Warta Poznań": "linear-gradient(135deg, #009900, #ffffff)",
-        "Odra Opole": "linear-gradient(135deg, #0000ff, #ff0000)"
-    };
-
-    const MOTYWY_LALIGA = {
-        "Real Madrid": "linear-gradient(135deg, #ffffff, #f1c40f)",
-        "FC Barcelona": "linear-gradient(135deg, #004d98, #a50044)",
-        "Atletico Madrid": "repeating-linear-gradient(90deg, #ff0000, #ff0000 30px, #ffffff 30px, #ffffff 60px)",
-        "Real Sociedad": "linear-gradient(90deg, #0055ff 50%, #ffffff 50%)",
-        "Valencia CF": "linear-gradient(135deg, #ffffff, #000000, #ff6600)",
-        "Sevilla FC": "linear-gradient(135deg, #ffffff, #ff0000)",
-        "Real Betis": "linear-gradient(90deg, #009900 50%, #ffffff 50%)",
-        "Athletic Bilbao": "repeating-linear-gradient(90deg, #ff0000, #ff0000 20px, #ffffff 20px, #ffffff 40px)",
-        "Girona FC": "linear-gradient(135deg, #ff0000, #ffffff)"
-    };
-
-    const MOTYWY_POSTACI = {
-        "Mario": "linear-gradient(135deg, #ff0000, #0055ff)", "Luigi": "linear-gradient(135deg, #00b300, #000000)", "Peach": "linear-gradient(135deg, #ff99cc, #ffe6f2)", "Daisy": "linear-gradient(135deg, #ffcc00, #ff6600)", "Rosalina": "linear-gradient(135deg, #00ffff, #0066ff)", "Tanooki Mario": "linear-gradient(135deg, #663300, #ffcc99)", "Cat Peach": "linear-gradient(135deg, #ffb3ff, #ff66cc)", "Yoshi": "linear-gradient(135deg, #99ff33, #ffffff)", "Toad": "linear-gradient(135deg, #ffffff, #ff0000)", "Koopa Troopa": "linear-gradient(135deg, #00ff00, #ffff00)", "Shy Guy": "linear-gradient(135deg, #ff3333, #000000)", "Lakitu": "linear-gradient(135deg, #99ccff, #ffffff)", "Toadette": "linear-gradient(135deg, #ff6699, #ffffff)", "King Boo": "linear-gradient(135deg, #e6e6e6, #6600cc)", "Baby Mario": "linear-gradient(135deg, #ff4d4d, #ffffff)", "Baby Luigi": "linear-gradient(135deg, #4dff4d, #ffffff)", "Baby Peach": "linear-gradient(135deg, #ffb3d9, #ffffff)", "Baby Daisy": "linear-gradient(135deg, #ffe066, #ffffff)", "Baby Rosalina": "linear-gradient(135deg, #b3ffff, #ffffff)", "Metal Mario": "linear-gradient(135deg, #737373, #000000)", "Pink Gold Peach": "linear-gradient(135deg, #ff9999, #ffd700)", "Wario": "linear-gradient(135deg, #ffff00, #6600cc)", "Waluigi": "linear-gradient(135deg, #6600cc, #000000)", "Donkey Kong": "linear-gradient(135deg, #802b00, #ff0000)", "Bowser": "linear-gradient(135deg, #006600, #ffcc00)", "Dry Bones": "linear-gradient(135deg, #d9d9d9, #000000)", "Bowser Jr.": "linear-gradient(135deg, #ffdb4d, #006600)", "Dry Bowser": "linear-gradient(135deg, #404040, #ff0000)", "Lemmy": "linear-gradient(135deg, #ff99ff, #33ccff)", "Morton": "linear-gradient(135deg, #595959, #ffffff)", "Wendy": "linear-gradient(135deg, #ff3399, #ffff00)", "Iggy": "linear-gradient(135deg, #33ff33, #6600cc)", "Roy": "linear-gradient(135deg, #ff66cc, #ff0000)", "Ludwig": "linear-gradient(135deg, #3366ff, #ffffff)", "Larry": "linear-gradient(135deg, #33ccff, #0000ff)", "Inkling Girl": "linear-gradient(135deg, #ff6600, #cc00ff)", "Inkling Boy": "linear-gradient(135deg, #3333ff, #00ff00)", "Link": "linear-gradient(135deg, #2d8659, #4db8ff)", "Villager Boy": "linear-gradient(135deg, #4db8ff, #ffffff)", "Villager Girl": "linear-gradient(135deg, #ff80df, #ffffff)", "Isabelle": "linear-gradient(135deg, #ffffb3, #ff66cc)", "Funky Kong": "linear-gradient(135deg, #ffcc00, #802b00)", "Diddy Kong": "linear-gradient(135deg, #cc0000, #ffcc00)", "Pauline": "linear-gradient(135deg, #800000, #ff0000)", "Peachette": "linear-gradient(135deg, #ff66b3, #ffd700)", "Petey Piranha": "linear-gradient(135deg, #008000, #ff0000)", "Wiggler": "linear-gradient(135deg, #ffff33, #000000)", "Kamek": "linear-gradient(135deg, #3366ff, #ffffff)"
-    };
-
-    const MOTYWY_SYS = {
-        "Deep Space": "linear-gradient(135deg, #000428, #004e92)",
-        "Cyberpunk": "linear-gradient(135deg, #f40076, #342d7e)",
-        "Gold Rush": "linear-gradient(135deg, #bf953f, #fcf6ba)",
-        "Ice World": "linear-gradient(135deg, #83a4d4, #b6fbff)",
-        "Neon Mint": "linear-gradient(135deg, #00ffcc, #003322)",
-        "Purple Haze": "linear-gradient(135deg, #cc00ff, #330044)",
-        "Lava Flow": "linear-gradient(135deg, #ff4500, #220000)",
-        "Electric Blue": "linear-gradient(135deg, #0077ff, #001133)",
-        "Toxic": "linear-gradient(135deg, #adff2f, #1a3300)",
-        "Hot Pink": "linear-gradient(135deg, #ff1493, #33001a)",
-        "Sunburn": "linear-gradient(135deg, #ff8c00, #441100)",
-        "Vaporwave": "linear-gradient(135deg, #ff71ce, #01cdfe, #05ffa1)",
-        "Dark Knight": "linear-gradient(135deg, #232526, #414345)",
-        "Matrix": "linear-gradient(180deg, #000000, #003300, #000000)",
-        "Forest": "linear-gradient(135deg, #11998e, #38ef7d)",
-        "Ocean Depth": "linear-gradient(180deg, #2c3e50, #000000)",
-        "Sahara": "linear-gradient(135deg, #f4a460, #8b4513)",
-        "Tundra": "linear-gradient(135deg, #eef2f3, #8e9eab)",
-        "Cherry Blossom": "linear-gradient(135deg, #ffd1ff, #fad0c4)",
-        "Midnight": "linear-gradient(135deg, #232526, #414345)",
-        "Autumn": "linear-gradient(135deg, #dad299, #b06ab3)",
-        "Skyline": "linear-gradient(180deg, #1e3c72, #2a5298)",
-        "Emerald": "linear-gradient(135deg, #0575E6, #021B79)",
-        "Volcano": "linear-gradient(135deg, #434343, #000000)",
-        "Platinum": "linear-gradient(135deg, #e5e5e5, #666666)",
-        "Rose Gold": "linear-gradient(135deg, #e7c1d3, #9d6d7e)",
-        "Bronze Age": "linear-gradient(135deg, #553311, #aa7744)",
-        "Black Diamond": "radial-gradient(circle, #434343 0%, #000000 100%)",
-        "Royal Purple": "linear-gradient(135deg, #6a11cb, #2575fc)",
-        "Carbon Fiber": "repeating-linear-gradient(45deg, #111, #111 2px, #222 2px, #222 4px)",
-        "Silk": "linear-gradient(135deg, #af8231, #fcf6ba)",
-        "Ruby": "linear-gradient(135deg, #870000, #190a05)",
-        "Sapphire": "linear-gradient(135deg, #000046, #1cb5e0)",
-        "Copper": "linear-gradient(135deg, #b87333, #221100)",
-        "Blood Moon": "radial-gradient(circle, #ff0000, #000000)",
-        "Glitch": "linear-gradient(90deg, #ff0000 0%, #00ff00 50%, #0000ff 100%)",
-        "Galaxy": "radial-gradient(circle, #20002c, #cbb4d4)",
-        "Solar": "linear-gradient(135deg, #ff512f, #dd2476)",
-        "Candy": "linear-gradient(135deg, #ee9ca7, #ffdde1)",
-        "Deep Sea": "linear-gradient(135deg, #4b6cb7, #182848)",
-        "Abyss": "linear-gradient(180deg, #0f2027, #203a43, #2c5364)",
-        "Retro": "linear-gradient(135deg, #3f2b96, #a8c0ff)",
-        "Overdrive": "linear-gradient(135deg, #f12711, #f5af19)",
-        "Ender": "linear-gradient(135deg, #000000, #4b0082)"
-    };
-
-    function startLoading() {
-        let p = 0;
-        const label = document.getElementById('status-label');
-        const teraz = new Date();
-        const h = teraz.getHours().toString().padStart(2, '0');
-        const m = teraz.getMinutes().toString().padStart(2, '0');
-        const calyCzas = h + m;
-        const wagi = { '0': 5, '1': 2, '2': 8, '3': 0, '4': -2, '5': 3, '6': 6, '7': -2, '8': -1, '9': 7 };
-        let x = 20;
-        let sumaMod = 0;
-        calyCzas.split('').forEach(cyfra => { sumaMod += wagi[cyfra]; });
-        let szybkosc = Math.max(5, x + sumaMod);
-
-        const interval = setInterval(() => {
-            p++;
-            document.getElementById('percent-text').innerText = p + "%";
-            document.getElementById('progress-bar-fill').style.width = p + "%";
-            if (p <= 20) label.innerText = "Synchronizacja czasu...";
-            else if (p <= 60) label.innerText = "Hey, browser, make another row in the table...";
-            else if (p <= 90) label.innerText = "Weryfikacja bazy x...";
-            else label.innerText = "System gotowy!";
-            if (p >= 100) {
-                clearInterval(interval);
-                setTimeout(() => {
-                    document.getElementById('loading-screen').style.opacity = '0';
-                    setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 800);
-                }, 500);
-            }
-        }, szybkosc);
-    }
-
-    function ustawTlo(style) {
-        const bg = document.getElementById('app-bg');
-        if (style.startsWith("http")) {
-            bg.style.backgroundImage = `url('${style}')`;
-        } else {
-            bg.style.background = style;
-        }
-        bg.style.backgroundSize = "cover";
-        bg.style.backgroundPosition = "center";
-        bg.style.backgroundAttachment = "fixed";
-    }
-
-    function inicjalizujMenuMotywow() {
-        const kolibryGrid = document.getElementById('grid-kolibry');
-        for(let k in MOTYWY_KOLIBRY) {
-            let b = document.createElement('div'); b.className = 't-btn'; b.style.background = MOTYWY_KOLIBRY[k];
-            b.onclick = () => ustawTlo(MOTYWY_KOLIBRY[k]); b.innerText = k; kolibryGrid.appendChild(b);
-        }
-
-        const customGrid = document.getElementById('grid-custom');
-        for(let nazwa in MOJE_WLASNE_LINKI) {
-            let link = MOJE_WLASNE_LINKI[nazwa];
-            if (link !== "TU_WKLEJ_LINK" && link !== "") {
-                let b = document.createElement('div'); b.className = 't-btn'; 
-                b.style.background = `url('${link}')`;
-                b.onclick = () => ustawTlo(link); b.innerText = nazwa; customGrid.appendChild(b);
-            }
-        }
-
-        const charGrid = document.getElementById('grid-chars');
-        for(let p in MOTYWY_POSTACI) {
-            let b = document.createElement('div'); b.className = 't-btn'; b.style.background = MOTYWY_POSTACI[p];
-            b.onclick = () => ustawTlo(MOTYWY_POSTACI[p]); b.innerText = p; charGrid.appendChild(b);
-        }
-        const ekstraGrid = document.getElementById('grid-ekstra');
-        for(let k in MOTYWY_EKSTRAKLASA) {
-            let b = document.createElement('div'); b.className = 't-btn'; b.style.background = MOTYWY_EKSTRAKLASA[k];
-            b.onclick = () => ustawTlo(MOTYWY_EKSTRAKLASA[k]); b.innerText = k; ekstraGrid.appendChild(b);
-        }
-        const pierwszaGrid = document.getElementById('grid-pierwsza');
-        for(let k in MOTYWY_PIERWSZA_LIGA) {
-            let b = document.createElement('div'); b.className = 't-btn'; b.style.background = MOTYWY_PIERWSZA_LIGA[k];
-            b.onclick = () => ustawTlo(MOTYWY_PIERWSZA_LIGA[k]); b.innerText = k; pierwszaGrid.appendChild(b);
-        }
-        const laligaGrid = document.getElementById('grid-laliga');
-        for(let k in MOTYWY_LALIGA) {
-            let b = document.createElement('div'); b.className = 't-btn'; b.style.background = MOTYWY_LALIGA[k];
-            b.onclick = () => ustawTlo(MOTYWY_LALIGA[k]); b.innerText = k; laligaGrid.appendChild(b);
-        }
-        const sysGrid = document.getElementById('grid-sys');
-        for(let s in MOTYWY_SYS) {
-            let b = document.createElement('div'); b.className = 't-btn'; b.style.background = MOTYWY_SYS[s];
-            b.onclick = () => ustawTlo(MOTYWY_SYS[s]); b.innerText = s; sysGrid.appendChild(b);
-        }
-    }
-
-    const daneGry = {
-        "Mushroom": ["Mario Kart Stadium", "Water Park", "Sweet Sweet Canyon", "Thwomp Ruins"],
-        "Flower": ["Mario Circuit", "Toad Harbour", "Twisted Mansion", "Shy Guy Falls"],
-        "Star": ["Sunshine Airport", "Dolphin Shoals", "Electrodrome", "Mount Wario"],
-        "Special": ["Cloudtop Cruise", "Bone-Dry Dunes", "Bowser's Castle", "Rainbow Road"],
-        "Shell": ["Moo Moo Meadows", "GBA Mario Circuit", "Cheep Cheep Beach", "Luigi's Mansion"],
-        "Banana": ["Donut Plains 3", "Royal Raceway", "DK Jungle", "Yoshi Valley"],
-        "Leaf": ["Wario Stadium", "Sherbet Land", "Music Park", "Tick-Tock Clock"],
-        "Lightning": ["Piranha Plant Slide", "Grumble Volcano", "Rainbow Road (N64)", "Tick-Tock Clock"],
-        "Egg": ["Yoshi Circuit", "Excitebike Arena", "Dragon Driftway", "Mute City"],
-        "Triforce": ["Wario's Gold Mine", "SNES Rainbow Road", "Ice Ice Outpost", "Hyrule Circuit"],
-        "Crossing": ["Baby Park", "Cheese Land", "Wild Woods", "Animal Crossing"],
-        "Bell": ["Neo Bowser City", "Ribbon Road", "Super Bell Subway", "Big Blue"],
-        "Golden Dash": ["Paris Promenade", "Toad Circuit", "Choco Mountain", "Coconut Mall"],
-        "Lucky Cat": ["Tokyo Blur", "Shroom Ridge", "Sky Garden", "Ninja Hideaway"],
-        "Turnip": ["New York Minute", "Mario Circuit 3", "Kalimari Desert", "Waluigi Pinball"],
-        "Propeller": ["Sydney Sprint", "Snow Land", "Mushroom Gorge", "Sky-High Sundae"],
-        "Rock": ["London Loop", "Boo Lake", "Rock Rock Mountain", "Maple Treeway"],
-        "Moon": ["Berlin Byways", "Peach Gardens", "Merry Mountain", "Rainbow Road (3DS)"],
-        "Fruit": ["Amsterdam Drift", "Riverside Park", "DK Summit", "Yoshi's Island"],
-        "Boomerang": ["Bangkok Rush", "Mario Circuit (DS)", "Waluigi Stadium", "Singapore Speedway"],
-        "Feather": ["Athens Dash", "Daisy Cruiser", "Moonview Highway", "Squeaky Clean Sprint"],
-        "Cherry": ["Los Angeles Laps", "Sunset Wilds", "Koopa Cape", "Vancouver Velocity"],
-        "Acorn": ["Rome Avanti", "DK Mountain", "Daisy Circuit", "Piranha Plant Cove"],
-        "Spiny": ["Madrid Drive", "Rosalina's Ice World", "Bowser Castle 3", "Wii Rainbow Road"]
-    };
-
-    const rodzina = ["Mama", "Tata", "Miłosz", "Mikołaj"];
-    let zawodnicy = [];
-
-    function inicjalizuj() {
-        const zapis = localStorage.getItem(STORAGE_KEY);
-        zawodnicy = zapis ? JSON.parse(zapis) : rodzina.map(n => ({ name: n, medale: [0,0,0,0], elo: 1000, historia: [] }));
-        const nav = document.getElementById('cup-nav');
-        for (const cup in daneGry) {
-            const b = document.createElement('div'); b.style = "padding:8px; color:#aaa; cursor:pointer; font-size:0.75em; border-bottom:1px solid rgba(255,255,255,0.05);";
-            b.innerText = "🏆 " + cup; b.onclick = () => {
-                const target = document.getElementById(`header-${cup}`);
-                if(target) target.scrollIntoView({ behavior: 'smooth' });
-            };
-            nav.appendChild(b);
-        }
-        document.getElementById('select-zawodnik').innerHTML = rodzina.map(n => `<option value="${n}">${n}</option>`).join('');
-        inicjalizujMenuMotywow();
-        ustawTlo(MOTYWY_SYS["Deep Space"]);
-        odswiezRanking();
-        odswiezMenuTras();
-        startLoading();
-    }
-
-    function toggleThemeMenu() { document.getElementById('theme-menu').classList.toggle('active'); }
-
-    function odswiezRanking() {
-
-    // 🔥 Ranking olimpijski: złoto > srebro > brąz > platyna
-    zawodnicy.sort((a, b) => {
-        if (b.medale[0] !== a.medale[0]) return b.medale[0] - a.medale[0];
-        if (b.medale[1] !== a.medale[1]) return b.medale[1] - a.medale[1];
-        if (b.medale[2] !== a.medale[2]) return b.medale[2] - a.medale[2];
-        if (b.medale[3] !== a.medale[3]) return b.medale[3] - a.medale[3];
-        return 0;
-    });
-
-    document.getElementById('ranking-body').innerHTML =
-        zawodnicy.map((z, i) => `
-            <tr class="gracz-row" onclick="pokazHistorie('${z.name}')">
-                <td>${i+1}</td>
-                <td><b>${z.name}</b></td>
-                <td style="color:gold">${z.medale[0]}</td>
-                <td style="color:silver">${z.medale[1]}</td>
-                <td style="color:#cd7f32">${z.medale[2]}</td>
-                <td style="color:lightgreen">${z.medale[3]}</td>
-                <td class="elo-cell">${z.elo.toFixed(1)}</td>
-            </tr>
-        `).join('');
-}
-
-
+    let currentProfile = null;
     
+    const STORAGE_KEY_PREFIX_GLOBAL = 'mundial_2026_global_score_v2026_';
+    const BET_PREFIX = 'bet_v2026_';
+    const THEME_PREFIX = 'theme_v2026_';
+    const COUNTER_THEME_PREFIX = 'counter_theme_v2026_';
+    const PROFILE_COLOR_PREFIX = 'profile_color_v2026_';
+    const ANIM_PREFIX = 'anim_v2026_';
+    const STRIPES_PREFIX = 'stripes_v2026_';
+    const COMPARE_THEME_PREFIX = 'compare_theme_v2026_';
 
-    function pokazHistorie(imie) {
-        const z = zawodnicy.find(x => x.name === imie);
-        if(!z || z.historia.length === 0) return alert("Brak wyścigów!");
-        document.getElementById('historia-tytul').innerText = "KIEROWCA: " + imie.toUpperCase();
-        document.getElementById('lista-osiagniec').innerHTML = z.historia.map(h => {
-            const imgUrl = IKONY_TRAS[h.gra];
-            const iconHtml = (imgUrl && imgUrl !== "TU_WKLEJ_LINK" && imgUrl !== "") 
-                ? `<img src="${imgUrl}" class="trasa-img" onerror="this.outerHTML='<div class=\'trasa-img\'>🏆</div>'">` 
-                : `<div class="trasa-img">🏆</div>`;
-            return `
-                <div class="karta-wyscigu" style="border-left: 5px solid ${h.v == 1 ? 'gold' : h.v == 0.6 ? 'silver' : h.v == 0.3 ? '#cd7f32' : 'lightgreen'}">
-                    ${iconHtml}
-                    <div style="display: flex; flex-direction: column; padding: 5px;">
-                        <span style="font-weight:bold; font-size:0.9em;">${h.gra}</span>
-                        <span style="font-size:0.7em; color:gold;">${h.v == 1 ? '🥇 ZŁOTO' : h.v == 0.6 ? '🥈 SREBRO' : h.v == 0.3 ? '🥉 BRĄZ' : '💿 PLATYNA'}</span>
-                        <span style="font-size:0.6em; color:#ccc;">${h.data}</span>
-                    </div>
-                </div>
-            `;
-        }).join('');
-        document.getElementById('panel-historii').style.display = 'block';
-    }
+    const profileNames = {
+        mama: '👩 Mama',
+        tata: '👨 Tata',
+        mikolaj: '👦 Mikołaj',
+        milosz: '👶 Miłosz',
+        natan: '👦 Natan'
+    };
 
-    function odswiezMenuTras() {
-        const imie = document.getElementById('select-zawodnik').value;
-        const gracz = zawodnicy.find(z => z.name === imie);
-        let html = "";
-        for (const [cup, tracks] of Object.entries(daneGry)) {
-            html += `<div class="cup-header" id="header-${cup}">${cup} Cup</div>`;
-            tracks.forEach(t => {
-                const hist = gracz.historia.filter(h => h.gra === t);
-                let klasa = (hist.length > 0) ? (hist[0].v === 1.0 ? "bg-gold" : hist[0].v === 0.6 ? "bg-silver" : hist[0].v === 0.3 ? "bg-bronze" : "bg-platinum") : "";
-                html += `<div class="track-item ${klasa} ${wybranaTrasa === t ? 'selected' : ''}" onclick="wybierzTrase('${t.replace(/'/g, "\\'")}')">${t}</div>`;
-            });
+    const rightSideProfileMap = {
+        mama: 'tata',
+        tata: 'mikolaj',
+        mikolaj: 'milosz',
+        milosz: 'natan',
+        natan: 'mama'
+    };
+
+    const matchesConfig = {
+        match1: { name: "Meksyk vs RPA", start: new Date(2026, 5, 11, 0, 0, 0), end: new Date(2026, 5, 11, 21, 0, 0) },
+        match2: { name: "Korea Płd. vs Czechy", start: new Date(2026, 5, 11, 0, 0, 0), end: new Date(2026, 5, 12, 4, 0, 0) },
+        match3: { name: "Kanada vs BiH", start: new Date(2026, 5, 12, 0, 0, 0), end: new Date(2026, 5, 12, 21, 0, 0) },
+        match4: { name: "USA vs Paragwaj", start: new Date(2026, 5, 12, 0, 0, 0), end: new Date(2026, 5, 13, 3, 0, 0) },
+        match5: { name: "Katar vs Szwajcaria", start: new Date(2026, 5, 13, 0, 0, 0), end: new Date(2026, 5, 13, 21, 0, 0) },
+        match6: { name: "Brazylia vs Maroko", start: new Date(2026, 5, 13, 0, 0, 0), end: new Date(2026, 5, 14, 0, 0, 0) },
+        match7: { name: "Haiti vs Szkocja", start: new Date(2026, 5, 13, 0, 0, 0), end: new Date(2026, 5, 14, 3, 0, 0) },
+        match8: { name: "Australia vs Turcja", start: new Date(2026, 5, 13, 0, 0, 0), end: new Date(2026, 5, 14, 6, 0, 0) },
+        match9: { name: "Niemcy vs Curaçao", start: new Date(2026, 5, 14, 0, 0, 0), end: new Date(2026, 5, 14, 19, 0, 0) },
+        match10: { name: "Japonia vs Holandia", start: new Date(2026, 5, 14, 0, 0, 0), end: new Date(2026, 5, 14, 19, 0, 0) },
+        match11: { name: "WKS vs Ekwador", start: new Date(2026, 5, 14, 0, 0, 0), end: new Date(2026, 5, 15, 1, 0, 0) },
+        match12: { name: "Szwecja vs Tunezja", start: new Date(2026, 5, 14, 0, 0, 0), end: new Date(2026, 5, 15, 4, 0, 0) },
+        match13: { name: "Hiszpania vs RZP", start: new Date(2026, 5, 15, 0, 0, 0), end: new Date(2026, 5, 15, 18, 0, 0) },
+        match14: { name: "Belgia vs Egipt", start: new Date(2026, 5, 15, 0, 0, 0), end: new Date(2026, 5, 15, 21, 0, 0) },
+        match15: { name: "Arabia Saudyjska vs Urugwaj", start: new Date(2026, 5, 15, 0, 0, 0), end: new Date(2026, 5, 16, 0, 0, 0) },
+        match16: { name: "Iran vs Nowa Zelandia", start: new Date(2026, 5, 15, 0, 0, 0), end: new Date(2026, 5, 16, 3, 0, 0) },
+        match17: { name: "Francja vs Senegal", start: new Date(2026, 5, 16, 0, 0, 0), end: new Date(2026, 5, 16, 21, 0, 0) },
+        match18: { name: "Irak vs Norwegia", start: new Date(2026, 5, 16, 0, 0, 0), end: new Date(2026, 5, 17, 0, 0, 0) },
+        match19: { name: "Argentyna vs Algieria", start: new Date(2026, 5, 16, 0, 0, 0), end: new Date(2026, 5, 17, 3, 0, 0) }
+    };
+
+    function selectProfile(profile) {
+        document.getElementById('profile-menu-section').classList.add('hidden');
+        hidePlanetMenu();
+
+        if (profile === 'admin') {
+            document.body.className = '';
+            document.getElementById('admin-view').classList.remove('hidden');
+            document.getElementById('user-view').classList.add('hidden');
+        } else {
+            currentProfile = profile;
+            document.getElementById('admin-view').classList.add('hidden');
+            const userView = document.getElementById('user-view');
+            userView.classList.remove('hidden');
+            
+            const animEnabled = localStorage.getItem(ANIM_PREFIX + currentProfile) !== 'false';
+            if (animEnabled) {
+                userView.classList.add('fade-in');
+            } else {
+                userView.classList.remove('fade-in');
+            }
+
+            const stripesEnabled = localStorage.getItem(STRIPES_PREFIX + currentProfile) === 'true';
+            if (stripesEnabled) {
+                document.body.classList.add('stripes-animation');
+            } else {
+                document.body.classList.remove('stripes-animation');
+            }
+            
+            document.getElementById('current-profile-name').innerText = profileNames[profile];
+            
+            loadUserPreferences();
+            setupCompareOptions();
+            switchWindow('matches');
+            checkMatchStatus();
         }
-        document.getElementById('track-list-container').innerHTML = html;
     }
 
-    function wybierzTrase(t) { wybranaTrasa = t; odswiezMenuTras(); }
-
-    function przyznajMedal() {
-        const imie = document.getElementById('select-zawodnik').value;
-        const score = parseFloat(document.getElementById('select-medal').value);
-        if(!wybranaTrasa) return alert("Wybierz trasę!");
-        const gracz = zawodnicy.find(z => z.name === imie);
-        const expected = 1 / (1 + Math.pow(10, (1000 - gracz.elo) / 400));
-        gracz.elo = Math.round((gracz.elo + K_FACTOR * (score - expected)) * 10) / 10;
-        if(score === 1.0) gracz.medale[0]++; 
-        else if(score === 0.6) gracz.medale[1]++; 
-        else if(score === 0.3) gracz.medale[2]++; 
-        else gracz.medale[3]++;
-        gracz.historia.unshift({ gra: wybranaTrasa, v: score, data: new Date().toLocaleDateString() });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(zawodnicy));
-        odswiezRanking(); odswiezMenuTras();
-        alert("Wynik zapisany!");
+    function backToProfiles() {
+        currentProfile = null;
+        document.body.className = '';
+        const userView = document.getElementById('user-view');
+        userView.classList.add('hidden');
+        userView.classList.remove('fade-in');
+        document.getElementById('admin-view').classList.add('hidden');
+        document.getElementById('profile-menu-section').classList.remove('hidden');
+        hidePlanetMenu();
     }
 
-    window.onload = inicjalizuj;
+    function toggleAnim(enabled) {
+        if (!currentProfile) return;
+        localStorage.setItem(ANIM_PREFIX + currentProfile, enabled);
+    }
+    
+    function toggleStripes(enabled) {
+        if (!currentProfile) return;
+        if (calculateTotalPoints(currentProfile) < 10) {
+            alert("Funkcja zablokowana! Potrzebujesz 10 punktów.");
+            document.getElementById('stripes-toggle').checked = false;
+            return;
+        }
+        localStorage.setItem(STRIPES_PREFIX + currentProfile, enabled);
+        if (enabled) {
+            document.body.classList.add('stripes-animation');
+        } else {
+            document.body.classList.remove('stripes-animation');
+        }
+    }
+
+    function togglePlanetMenu() {
+        document.getElementById('planet-dropdown-menu').classList.toggle('hidden');
+        const animEnabled = localStorage.getItem(ANIM_PREFIX + currentProfile) !== 'false';
+        document.getElementById('anim-toggle').checked = animEnabled;
+        const stripesEnabled = localStorage.getItem(STRIPES_PREFIX + currentProfile) === 'true';
+        document.getElementById('stripes-toggle').checked = stripesEnabled;
+    }
+
+    function hidePlanetMenu() {
+        const menu = document.getElementById('planet-dropdown-menu');
+        if (menu) menu.classList.add('hidden');
+    }
+
+    function renderPlanetButtons() {
+        if (!currentProfile) return;
+        const currentPoints = calculateTotalPoints(currentProfile);
+        
+        const container = document.getElementById('counter-fire-wrapper');
+        if (currentPoints >= 67) {
+            container.innerHTML = `<div id="sq-counter-fire" class="theme-square square-fire" onclick="setCounterTheme('fire')" title="Motyw Ogniowy Licznika"></div>`;
+        } else {
+            container.innerHTML = `<div class="square-lock-fire" title="Zablokowane! Musisz mieć 67 punktów."><span>🔒 67</span></div>`;
+        }
+
+        const blueWhiteContainer = document.getElementById('counter-blue-white-wrapper');
+        if (currentPoints >= 7) {
+            blueWhiteContainer.innerHTML = `<div id="sq-counter-blue-white" class="theme-square square-blue-white" onclick="setCounterTheme('blue-white')" title="Motyw Niebiesko-Biały"></div>`;
+        } else {
+            blueWhiteContainer.innerHTML = `<div class="square-lock-blue-white" title="Zablokowane! Musisz mieć 7 punktów."><span>🔒 7</span></div>`;
+        }
+
+        const profileContainer = document.getElementById('counter-yellow-wrapper');
+        if (currentPoints >= 47) {
+            profileContainer.innerHTML = `<div id="sq-profile-yellow" class="theme-square square-yellow" onclick="setProfileColor('yellow')" title="Żółty profil"></div>`;
+        } else {
+            profileContainer.innerHTML = `<div class="square-lock-yellow" title="Zablokowane! Musisz mieć 47 punktów."><span>🔒 47</span></div>`;
+        }
+
+        const redContainer = document.getElementById('counter-red-wrapper');
+        if (currentPoints >= 48) {
+            redContainer.innerHTML = `<div id="sq-profile-red" class="theme-square square-red" onclick="setProfileColor('red')" title="Czerwony profil"></div>`;
+        } else {
+            redContainer.innerHTML = `<div class="square-lock-red" title="Zablokowane! Musisz mieć 48 punktów."><span>🔒 48</span></div>`;
+        }
+
+        const pinkContainer = document.getElementById('counter-pink-wrapper');
+        if (currentPoints >= 7) {
+            pinkContainer.innerHTML = `<div id="sq-profile-pink" class="theme-square square-pink" onclick="setProfileColor('pink')" title="Różowy profil"></div>`;
+        } else {
+            pinkContainer.innerHTML = `<div class="square-lock-pink" title="Zablokowane! Musisz mieć 7 punktów."><span>🔒 7</span></div>`;
+        }
+
+        const heartsContainer = document.getElementById('hearts-wrapper');
+        if (currentPoints >= 7) {
+            heartsContainer.innerHTML = `<div id="sq-hearts" class="theme-square square-hearts" onclick="setUserTheme('hearts')" title="Motyw serduszka"></div>`;
+        } else {
+            heartsContainer.innerHTML = `<div class="square-lock-hearts" title="Zablokowane! Musisz mieć 7 punktów."><span>🔒 7</span></div>`;
+        }
+
+        /* Przycisk dla NOWEGO motywu ognistego strony (od 70 punktów) */
+        const fireThemeContainer = document.getElementById('fire-theme-wrapper');
+        if (currentPoints >= 70) {
+            fireThemeContainer.innerHTML = `<div id="sq-fire-theme" class="theme-square square-fire-theme" onclick="setUserTheme('fire-theme')" title="Motyw Ognisty Strony"></div>`;
+        } else {
+            fireThemeContainer.innerHTML = `<div class="square-lock-fire-theme" title="Zablokowane! Musisz mieć 70 punktów."><span>🔒 70</span></div>`;
+        }
+        
+        const stripesContainer = document.getElementById('stripes-wrapper');
+        if (currentPoints >= 10) {
+            stripesContainer.innerHTML = `<div class="theme-square square-black" style="background:#555"></div>`;
+        } else {
+            stripesContainer.innerHTML = `<div class="square-lock-stripes" title="Zablokowane! Musisz mieć 10 punktów."><span>🔒 10</span></div>`;
+        }
+
+        const andorraContainer = document.getElementById('andorra-wrapper');
+        const rightProfile = rightSideProfileMap[currentProfile];
+        if (rightProfile && currentPoints > calculateTotalPoints(rightProfile)) {
+            andorraContainer.innerHTML = `<div id="sq-andorra" class="theme-square square-andorra" onclick="setUserTheme('andorra')" title="Motyw Andory (Darmowy!)"></div>`;
+        } else {
+            andorraContainer.innerHTML = ``;
+            if (localStorage.getItem(THEME_PREFIX + currentProfile) === 'andorra') {
+                localStorage.setItem(THEME_PREFIX + currentProfile, 'dark');
+                applyThemeStyles('dark');
+            }
+        }
+    }
+
+    function loadUserPreferences() {
+        if (!currentProfile) return;
+        
+        const savedTheme = localStorage.getItem(THEME_PREFIX + currentProfile) || 'dark';
+        applyThemeStyles(savedTheme);
+
+        renderPlanetButtons();
+        
+        const savedCounterTheme = localStorage.getItem(COUNTER_THEME_PREFIX + currentProfile) || 'default';
+        applyCounterStyles(savedCounterTheme);
+
+        const savedProfileColor = localStorage.getItem(PROFILE_COLOR_PREFIX + currentProfile) || '#00ff00';
+        applyProfileColor(savedProfileColor);
+
+        const savedCompareTheme = localStorage.getItem(COMPARE_THEME_PREFIX + currentProfile) || 'orange';
+        applyCompareThemeStyles(savedCompareTheme);
+    }
+
+    function setUserTheme(selectedTheme) {
+        if (!currentProfile) return;
+        const now = new Date();
+        if (selectedTheme === 'gradient' && now >= new Date(2026, 5, 16)) {
+            alert("Motyw gradientowy wygasł 16.06!");
+            return;
+        }
+        if (selectedTheme === 'hearts') {
+            if (calculateTotalPoints(currentProfile) < 7) {
+                alert("Motyw zablokowany! Potrzebujesz 7 punktów.");
+                return;
+            }
+            if (now >= new Date(2026, 5, 20)) {
+                alert("Motyw serduszka wygasł 20.06!");
+                return;
+            }
+        }
+        if (selectedTheme === 'fire-theme') {
+            if (calculateTotalPoints(currentProfile) < 70) {
+                alert("Motyw zablokowany! Potrzebujesz 70 punktów.");
+                return;
+            }
+        }
+        if (selectedTheme === 'andorra') {
+            const rightProfile = rightSideProfileMap[currentProfile];
+            if (!rightProfile || calculateTotalPoints(currentProfile) <= calculateTotalPoints(rightProfile)) {
+                alert("Nie masz już wyższej liczby punktów od gracza po prawej stronie!");
+                return;
+            }
+        }
+        localStorage.setItem(THEME_PREFIX + currentProfile, selectedTheme);
+        applyThemeStyles(selectedTheme);
+        hidePlanetMenu();
+    }
+
+    function applyThemeStyles(theme) {
+        const now = new Date();
+        if (theme === 'gradient' && now >= new Date(2026, 5, 16)) theme = 'dark';
+        if (theme === 'hearts' && now >= new Date(2026, 5, 20)) theme = 'dark';
+        if (theme === 'fire-theme' && calculateTotalPoints(currentProfile) < 70) theme = 'dark';
+        
+        const rightProfile = rightSideProfileMap[currentProfile];
+        if (theme === 'andorra' && (!rightProfile || calculateTotalPoints(currentProfile) <= calculateTotalPoints(rightProfile))) {
+            theme = 'dark';
+        }
+        
+        document.body.className = theme === 'light' ? 'light-theme' : (theme === 'gradient' ? 'gradient-theme' : (theme === 'hearts' ? 'hearts-theme' : (theme === 'fire-theme' ? 'fire-page-theme' : (theme === 'andorra' ? 'andorra-theme' : ''))));
+        if (localStorage.getItem(STRIPES_PREFIX + currentProfile) === 'true') document.body.classList.add('stripes-animation');
+        
+        const sqDark = document.getElementById('sq-dark');
+        const sqLight = document.getElementById('sq-light');
+        const sqGrad = document.getElementById('sq-gradient');
+        const sqHearts = document.getElementById('sq-hearts');
+        const sqFireTheme = document.getElementById('sq-fire-theme');
+        const sqAndorra = document.getElementById('sq-andorra');
+        
+        if (sqDark) sqDark.classList.toggle('active-square', theme === 'dark');
+        if (sqLight) sqLight.classList.toggle('active-square', theme === 'light');
+        if (sqGrad) sqGrad.classList.toggle('active-square', theme === 'gradient');
+        if (sqHearts) sqHearts.classList.toggle('active-square', theme === 'hearts');
+        if (sqFireTheme) sqFireTheme.classList.toggle('active-square', theme === 'fire-theme');
+        if (sqAndorra) sqAndorra.classList.toggle('active-square', theme === 'andorra');
+    }
+
+    function setCounterTheme(selectedCounterTheme) {
+        if (!currentProfile) return;
+        if (selectedCounterTheme === 'fire' && calculateTotalPoints(currentProfile) < 67) {
+            alert("Motyw zablokowany! Potrzebujesz 67 punktów.");
+            return;
+        }
+        if (selectedCounterTheme === 'blue-white' && calculateTotalPoints(currentProfile) < 7) {
+            alert("Motyw zablokowany! Potrzebujesz 7 punktów.");
+            return;
+        }
+        localStorage.setItem(COUNTER_THEME_PREFIX + currentProfile, selectedCounterTheme);
+        applyCounterStyles(selectedCounterTheme);
+        hidePlanetMenu();
+    }
+
+    function applyCounterStyles(counterTheme) {
+        const mainCounter = document.getElementById('big-points-value');
+        const sqDefault = document.getElementById('sq-counter-default');
+        const sqWhite = document.getElementById('sq-counter-white');
+        const sqFire = document.getElementById('sq-counter-fire');
+        const sqBlueWhite = document.getElementById('sq-counter-blue-white');
+
+        if (sqDefault) sqDefault.classList.remove('active-square');
+        if (sqWhite) sqWhite.classList.remove('active-square');
+        if (sqFire) sqFire.classList.remove('active-square');
+        if (sqBlueWhite) sqBlueWhite.classList.remove('active-square');
+
+        if (counterTheme === 'fire' && calculateTotalPoints(currentProfile) >= 67) {
+            mainCounter.className = "big-points-counter counter-style-fire";
+            if (sqFire) sqFire.classList.add('active-square');
+        } else if (counterTheme === 'blue-white' && calculateTotalPoints(currentProfile) >= 7) {
+            mainCounter.className = "big-points-counter counter-style-blue-white";
+            if (sqBlueWhite) sqBlueWhite.classList.add('active-square');
+        } else if (counterTheme === 'white') {
+            mainCounter.className = "big-points-counter counter-style-white";
+            if (sqWhite) sqWhite.classList.add('active-square');
+        } else {
+            mainCounter.className = "big-points-counter counter-style-default";
+            if (sqDefault) sqDefault.classList.add('active-square');
+        }
+    }
+
+    function setProfileColor(type) {
+        if (!currentProfile) return;
+        let color = '#00ff00';
+        if (type === 'yellow') {
+            if (calculateTotalPoints(currentProfile) < 47) {
+                alert("Kolor zablokowany! Potrzebujesz 47 punktów.");
+                return;
+            }
+            color = '#ffd700';
+        } else if (type === 'red') {
+            if (calculateTotalPoints(currentProfile) < 48) {
+                alert("Kolor zablokowany! Potrzebujesz 48 punktów.");
+                return;
+            }
+            color = '#ff0000';
+        } else if (type === 'pink') {
+            if (calculateTotalPoints(currentProfile) < 7) {
+                alert("Kolor zablokowany! Potrzebujesz 7 punktów.");
+                return;
+            }
+            color = '#ff69b4';
+        }
+        localStorage.setItem(PROFILE_COLOR_PREFIX + currentProfile, color);
+        applyProfileColor(color);
+        hidePlanetMenu();
+    }
+
+    function applyProfileColor(color) {
+        document.documentElement.style.setProperty('--profile-color', color);
+        const sqYellow = document.getElementById('sq-profile-yellow');
+        const sqRed = document.getElementById('sq-profile-red');
+        const sqPink = document.getElementById('sq-profile-pink');
+        const sqSystem = document.getElementById('sq-profile-system');
+        if (sqYellow) sqYellow.classList.toggle('active-square', color === '#ffd700');
+        if (sqRed) sqRed.classList.toggle('active-square', color === '#ff0000');
+        if (sqPink) sqPink.classList.toggle('active-square', color === '#ff69b4');
+        if (sqSystem) sqSystem.classList.toggle('active-square', color === '#00ff00');
+    }
+
+    function setCompareTheme(theme) {
+        if (!currentProfile) return;
+        localStorage.setItem(COMPARE_THEME_PREFIX + currentProfile, theme);
+        applyCompareThemeStyles(theme);
+        hidePlanetMenu();
+    }
+
+    function applyCompareThemeStyles(theme) {
+        const sqOrange = document.getElementById('sq-compare-orange');
+        const sqRed = document.getElementById('sq-compare-red');
+        if (sqOrange) sqOrange.classList.toggle('active-square', theme === 'orange');
+        if (sqRed) sqRed.classList.toggle('active-square', theme === 'red');
+    }
+
+    function switchWindow(windowType) {
+        document.querySelectorAll('.window-box').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.submenu-btn').forEach(el => el.classList.remove('active'));
+
+        const mapping = {
+            'matches': ['window-matches', 'sub-btn-matches'],
+            'table': ['window-table', 'sub-btn-table'],
+            'points': ['window-points', 'sub-btn-points'],
+            'compare': ['window-compare', 'sub-btn-compare'],
+            'ranking': ['window-ranking', 'sub-btn-ranking']
+        };
+        
+        document.getElementById(mapping[windowType][0]).classList.remove('hidden');
+        document.getElementById(mapping[windowType][1]).classList.add('active');
+        
+        if (windowType === 'compare') updateComparison();
+        if (windowType === 'ranking') renderRankingTable();
+        if (windowType === 'matches') checkMatchStatus();
+    }
+
+    function setupCompareOptions() {
+        const selectEl = document.getElementById('compare-profile-select');
+        selectEl.innerHTML = '<option value="">-- Wybierz osobę --</option>';
+        for (const key in profileNames) {
+            if (key !== currentProfile) selectEl.innerHTML += `<option value="${key}">${profileNames[key]}</option>`;
+        }
+        document.getElementById('compare-result-box').classList.add('hidden');
+    }
+
+    function getPlayerStats(profileKey) {
+        let totalPoints = 0, count3 = 0, count1 = 0, count0 = 0;
+        let history = [];
+        for (const matchId in matchesConfig) {
+            const savedBet = JSON.parse(localStorage.getItem(BET_PREFIX + profileKey + '_' + matchId));
+            const globalResult = JSON.parse(localStorage.getItem(STORAGE_KEY_PREFIX_GLOBAL + matchId));
+            if (!globalResult) continue;
+            if (!savedBet) { count0++; history.push(0); continue; }
+            if (savedBet.home === globalResult.home && savedBet.away === globalResult.away) {
+                totalPoints += 3; count3++; history.push(3);
+            } else if ((savedBet.home > savedBet.away && globalResult.home > globalResult.away) || 
+                       (savedBet.home === savedBet.away && globalResult.home === globalResult.away) || 
+                       (savedBet.home < savedBet.away && globalResult.home < globalResult.away)) {
+                totalPoints += 1; count1++; history.push(1);
+            } else { count0++; history.push(0); }
+        }
+        return { name: profileNames[profileKey], points: totalPoints, c3: count3, c1: count1, c0: count0, history: history };
+    }
+
+    function calculateTotalPoints(profileKey) {
+        return getPlayerStats(profileKey).points;
+    }
+
+    function updateComparison() {
+        const targetProfile = document.getElementById('compare-profile-select').value;
+        const resultBox = document.getElementById('compare-result-box');
+        if (!targetProfile) { resultBox.classList.add('hidden'); return; }
+        document.getElementById('compare-name-label').innerText = `Suma punktów profilu ${profileNames[targetProfile]}`;
+        document.getElementById('compare-points-value').innerText = calculateTotalPoints(targetProfile);
+        
+        const targetCompareTheme = localStorage.getItem(COMPARE_THEME_PREFIX + targetProfile) || 'orange';
+        const compareValueEl = document.getElementById('compare-points-value');
+        if (targetCompareTheme === 'red') {
+            compareValueEl.style.color = '#ff0000';
+            compareValueEl.style.textShadow = '0 0 20px rgba(255, 0, 0, 0.4)';
+        } else {
+            compareValueEl.style.color = '#ffaa00';
+            compareValueEl.style.textShadow = '0 0 20px rgba(255, 170, 0, 0.4)';
+        }
+        
+        resultBox.classList.remove('hidden');
+    }
+
+    function renderRankingTable() {
+        const rankingBody = document.getElementById('ranking-table-body');
+        rankingBody.innerHTML = "";
+        let familyData = Object.keys(profileNames).map(key => getPlayerStats(key));
+        familyData.sort((a, b) => b.points !== a.points ? b.points - a.points : b.c3 - a.c3);
+        familyData.forEach((player, index) => {
+            rankingBody.innerHTML += `<tr><td><b>${index + 1}</b></td><td><b>${player.name}</b></td><td style="color: #00ff00;">${player.c3}</td><td style="color: #ffaa00;">${player.c1}</td><td style="color: #ff5555;">${player.c0}</td><td style="font-weight: bold; color: #00ff00;">${player.points}</td></tr>`;
+        });
+    }
+
+    function checkMatchStatus() {
+        if (!currentProfile) return;
+        const now = new Date();
+        for (const matchId in matchesConfig) {
+            const config = matchesConfig[matchId];
+            const bettingForm = document.getElementById('betting-form-' + matchId);
+            const statusElement = document.getElementById('status-' + matchId);
+            const cardElement = document.getElementById('card-' + matchId);
+            const globalResult = JSON.parse(localStorage.getItem(STORAGE_KEY_PREFIX_GLOBAL + matchId));
+
+            if (globalResult) {
+                cardElement.classList.add("hidden");
+                statusElement.innerText = "Mecz zakończony i rozliczony.";
+                continue;
+            }
+            cardElement.classList.remove("hidden");
+            if (now < config.start) {
+                bettingForm.className = "hidden";
+                statusElement.innerText = `Mecz zablokowany. Odblokowanie: ${config.start.getDate()}.06.2026 o 00:00.`;
+            } else if (now >= config.start && now < config.end) {
+                bettingForm.className = "inputs-bet";
+                statusElement.innerText = `Mecz odblokowany! Czas do ${config.end.getDate()}.06 o ${config.end.getHours() < 10 ? '0' + config.end.getHours() : config.end.getHours()}:00.`;
+                
+                const savedBet = JSON.parse(localStorage.getItem(BET_PREFIX + currentProfile + '_' + matchId));
+                const inputHome = document.getElementById('bet-home-' + matchId);
+                const inputAway = document.getElementById('bet-away-' + matchId);
+                
+                if (savedBet && inputHome.value === "" && inputAway.value === "") {
+                    inputHome.value = savedBet.home;
+                    inputAway.value = savedBet.away;
+                }
+            } else {
+                cardElement.classList.add("hidden");
+                statusElement.innerText = "Oczekiwanie na wynik od Admina...";
+            }
+        }
+        renderTableAndPoints();
+    }
+
+    function saveBet(matchId) {
+        const savedHome = document.getElementById('bet-home-' + matchId).value;
+        const savedAway = document.getElementById('bet-away-' + matchId).value;
+        if (savedHome === "" || savedAway === "") { alert("Uzupełnij bramki!"); return; }
+        
+        localStorage.setItem(BET_PREFIX + currentProfile + '_' + matchId, JSON.stringify({ home: parseInt(savedHome), away: parseInt(savedAway) }));
+        alert("Zapisano!");
+        renderPlanetButtons();
+        checkMatchStatus();
+    }
+
+    function verifyAndApplyScore() {
+        if (document.getElementById('admin-code').value !== "616263") { alert("BŁĄD: Nieprawidłowy kod!"); return; }
+        const matchId = document.getElementById('admin-match-select').value;
+        const h = document.getElementById('real-home').value, a = document.getElementById('real-away').value;
+        if (h === "" || a === "") { alert("BŁĄD: Wpisz wynik!"); return; }
+        localStorage.setItem(STORAGE_KEY_PREFIX_GLOBAL + matchId, JSON.stringify({ home: parseInt(h), away: parseInt(a) }));
+        backToProfiles();
+    }
+
+    function renderTableAndPoints() {
+        if (!currentProfile) return;
+        const totalPoints = calculateTotalPoints(currentProfile);
+        document.getElementById('big-points-value').innerText = totalPoints;
+        renderPlanetButtons();
+        
+        const savedTheme = localStorage.getItem(THEME_PREFIX + currentProfile) || 'dark';
+        applyThemeStyles(savedTheme);
+        
+        const formaWindow = document.getElementById('forma-window');
+        if (totalPoints >= 47) {
+            const stats = getPlayerStats(currentProfile);
+            const last5 = stats.history.slice(-5).join('');
+            formaWindow.innerHTML = `FORMA: ${last5}`;
+            formaWindow.classList.remove('hidden');
+        } else {
+            formaWindow.classList.add('hidden');
+        }
+
+        const body = document.getElementById('score-table-body');
+        body.innerHTML = "";
+        for (const matchId in matchesConfig) {
+            const bet = JSON.parse(localStorage.getItem(BET_PREFIX + currentProfile + '_' + matchId));
+            const global = JSON.parse(localStorage.getItem(STORAGE_KEY_PREFIX_GLOBAL + matchId));
+            let pts = 0;
+            if (global && bet) {
+                if (bet.home === global.home && bet.away === global.away) pts = 3;
+                else if ((bet.home > bet.away && global.home > global.away) || (bet.home === bet.away && global.home === global.away) || (bet.home < bet.away && global.home < global.away)) pts = 1;
+            }
+            body.innerHTML += `<tr><td><b>${matchesConfig[matchId].name}</b></td><td>${bet ? bet.home+":"+bet.away : "Brak"}</td><td><b>${global ? global.home+":"+global.away : "Oczekiwanie"}</b></td><td style="color:${global?(pts>0?'#00ff00':'#ff5555'):'#aaa'}">${global ? "+"+pts : "0"}</td></tr>`;
+        }
+    }
+
+    setInterval(checkMatchStatus, 1000);
 </script>
+
 </body>
 </html>
