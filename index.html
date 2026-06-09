@@ -564,11 +564,10 @@
 <div id="profile-menu-section" class="profile-menu">
     <h1>🏆 MUNDIAL 2026 Typer</h1>
     <div class="profile-selector">
-        <button class="profile-btn" onclick="selectProfile('mama')">👩 Mama</button>
-        <button class="profile-btn" onclick="selectProfile('tata')">👨 Tata</button>
-        <button class="profile-btn" onclick="selectProfile('mikolaj')">👦 Mikołaj</button>
-        <button class="profile-btn" onclick="selectProfile('milosz')">👶 Miłosz</button>
-        <button class="profile-btn" onclick="selectProfile('natan')">👦 Natan</button>
+        <button class="profile-btn" onclick="selectProfile('mama')">👩 Szymon</button>
+        <button class="profile-btn" onclick="selectProfile('tata')">👨 Jacek</button>
+        <button class="profile-btn" onclick="selectProfile('mikolaj')">👦 Krzysiek</button>
+        <button class="profile-btn" onclick="selectProfile('milosz')">👶 Darek</button>
         <button class="profile-btn admin-btn" onclick="selectProfile('admin')">⚙️ Admin</button>
     </div>
 </div>
@@ -879,7 +878,7 @@
             </div>
             <div id="status-match14" class="status">Sprawdzanie stanu meczu...</div>
         </div>
-        
+
         <div id="card-match15" class="match-card">
             <div class="match-box">
                 <div class="teams">
@@ -896,7 +895,7 @@
             </div>
             <div id="status-match15" class="status">Sprawdzanie stanu meczu...</div>
         </div>
-        
+
         <div id="card-match16" class="match-card">
             <div class="match-box">
                 <div class="teams">
@@ -934,7 +933,7 @@
         <div id="card-match18" class="match-card">
             <div class="match-box">
                 <div class="teams">
-                    <span class="flag">🇮راق</span> <span>Irak</span> <span>vs</span> <span>Norwegia</span> <span class="flag">🇳🇴</span>
+                    <span class="flag">🇮🇶</span> <span>Irak</span> <span>vs</span> <span>Norwegia</span> <span class="flag">🇳🇴</span>
                 </div>
                 <div id="betting-form-match18" class="hidden">
                     <div class="inputs-bet">
@@ -977,7 +976,7 @@
                 </tr>
             </thead>
             <tbody id="score-table-body">
-                </tbody>
+            </tbody>
         </table>
     </div>
 
@@ -991,8 +990,7 @@
     <div id="window-compare" class="window-box hidden">
         <div style="font-size: 16px; margin-bottom: 10px; font-weight: bold;">Sprawdź punkty kogoś innego:</div>
         <select id="compare-profile-select" class="app-select" onchange="updateComparison()">
-            </select>
-        
+        </select>
         <div id="compare-result-box" class="hidden" style="text-align: center;">
             <div class="points-label" id="compare-name-label">Punkty użytkownika</div>
             <div id="compare-points-value" class="big-points-counter counter-style-default" style="color: #ffaa00; text-shadow: 0 0 20px rgba(255, 170, 0, 0.4);">0</div>
@@ -1000,69 +998,45 @@
     </div>
 
     <div id="window-ranking" class="window-box hidden">
-        <div style="font-size: 16px; font-weight: bold; margin-bottom: 5px;">Tabela Rodzinna Typera</div>
         <table class="scoreboard">
             <thead>
                 <tr>
                     <th>Poz</th>
                     <th>Gracz</th>
-                    <th>3 pkt</th>
-                    <th>1 pkt</th>
-                    <th>0 pkt</th>
-                    <th>Suma Pkt</th>
+                    <th>Pkt</th>
+                    <th>3p</th>
+                    <th>1p</th>
+                    <th>0p</th>
                 </tr>
             </thead>
             <tbody id="ranking-table-body">
-                </tbody>
+            </tbody>
         </table>
     </div>
 </div>
 
-<div id="admin-view" class="admin-panel hidden">
-    <button class="back-btn" onclick="backToProfiles()" style="border-color: #ff5555; margin-bottom: 20px;">⬅️ Powrót</button>
-    
-    <h3>⚙️ Panel Autoryzacji Admina</h3>
-    
-    <label for="admin-match-select">Wybierz mecz do rozliczenia:</label><br>
-    <select id="admin-match-select" class="app-select">
-        <option value="match1">🇲🇽 Meksyk vs RPA 🇿🇦</option>
-        <option value="match2">🇰🇷 Korea Południowa vs Czechy 🇨🇿</option>
-        <option value="match3">🇨🇦 Kanada vs BiH 🇧🇦</option>
-        <option value="match4">🇺🇸 USA vs Paragwaj 🇵🇾</option>
-        <option value="match5">🇶🇦 Katar vs Szwajcaria 🇨🇭</option>
-        <option value="match6">🇧🇷 Brazylia vs Maroko 🇲🇦</option>
-        <option value="match7">🇭🇹 Haiti vs Szkocja 🏴󠁧󠁢󠁳󠁣󠁴󠁿</option>
-        <option value="match8">🇦🇺 Australia vs Turcja 🇹🇷</option>
-        <option value="match9">🇩🇪 Niemcy vs Curaçao 🇨🇼</option>
-        <option value="match10">🇯🇵 Japonia vs Holandia 🇳🇱</option>
-        <option value="match11">🇨🇮 WKS vs Ekwador 🇪🇨</option>
-        <option value="match12">🇸🇪 Szwecja vs Tunezja 🇹🇳</option>
-        <option value="match13">🇪🇸 Hiszpania vs RZP 🇨🇻</option>
-        <option value="match14">🇧🇪 Belgia vs Egipt 🇪🇬</option>
-        <option value="match15">🇸🇦 Arabia Saudyjska vs Urugwaj 🇺🇾</option>
-        <option value="match16">🇮🇷 Iran vs Nowa Zelandia 🇳🇿</option>
-        <option value="match17">🇫🇷 Francja vs Senegal 🇸🇳</option>
-        <option value="match18">🇮🇶 Irak vs Norwegia 🇳🇴</option>
-        <option value="match19">🇦🇷 Argentyna vs Algieria 🇩🇿</option>
-    </select>
-    <br>
-
-    <label for="admin-code">Wpisz kod dostępu:</label><br>
-    <input type="text" id="admin-code" placeholder="Wpisz tajny kod..." style="padding: 8px; background: #2a2a2a; border: 1px solid #555; color: white; border-radius: 5px; margin-bottom: 15px; width: 80%; text-align: center;"><br>
-    
-    <label>Wpisz oficjalny wynik meczu:</label>
+<div id="admin-view" class="container admin-panel hidden">
+    <div class="top-controls" style="justify-content: center; margin-bottom: 15px;">
+        <button class="back-btn" onclick="backToProfiles()">⬅️ Wyjdź z Admina</button>
+    </div>
+    <h3>⚙️ PANEL ADMINISTRATORA</h3>
+    <div style="margin-bottom: 15px;">
+        <input type="password" id="admin-code" placeholder="Kod administratora" style="padding: 8px; font-size: 14px; text-align: center; border-radius: 4px; border: 1px solid #ff5555; background: #222; color: #fff;">
+    </div>
+    <div style="margin-bottom: 15px;">
+        <select id="admin-match-select" class="app-select" style="width: 100%; border-color: #ff5555;">
+        </select>
+    </div>
     <div class="admin-inputs" style="margin-bottom: 20px;">
         <input type="number" id="real-home" min="0" placeholder="0">
-        <span>:</span>
+        <span style="font-size: 24px; color: #ff5555; font-weight: bold;">:</span>
         <input type="number" id="real-away" min="0" placeholder="0">
     </div>
-
     <button class="btn btn-check" onclick="verifyAndApplyScore()">✔️ Zatwierdź wynik dla wszystkich</button>
 </div>
 
 <script>
     let currentProfile = null;
-    
     const STORAGE_KEY_PREFIX_GLOBAL = 'mundial_2026_global_score_v2026_';
     const BET_PREFIX = 'bet_v2026_';
     const THEME_PREFIX = 'theme_v2026_';
@@ -1073,33 +1047,31 @@
     const COMPARE_THEME_PREFIX = 'compare_theme_v2026_';
 
     const profileNames = {
-        mama: '👩 Mama',
-        tata: '👨 Tata',
-        mikolaj: '👦 Mikołaj',
-        milosz: '👶 Miłosz',
-        natan: '👦 Natan'
+        mama: '👩 Szymon',
+        tata: '👨 Jacek',
+        mikolaj: '👦 Krzysiek',
+        milosz: '👶 Darek'
     };
 
     const rightSideProfileMap = {
         mama: 'tata',
         tata: 'mikolaj',
         mikolaj: 'milosz',
-        milosz: 'natan',
-        natan: 'mama'
+        milosz: 'mama'
     };
 
     const matchesConfig = {
         match1: { name: "Meksyk vs RPA", start: new Date(2026, 5, 11, 0, 0, 0), end: new Date(2026, 5, 11, 21, 0, 0) },
         match2: { name: "Korea Płd. vs Czechy", start: new Date(2026, 5, 11, 0, 0, 0), end: new Date(2026, 5, 12, 4, 0, 0) },
         match3: { name: "Kanada vs BiH", start: new Date(2026, 5, 12, 0, 0, 0), end: new Date(2026, 5, 12, 21, 0, 0) },
-        match4: { name: "USA vs Paragwaj", start: new Date(2026, 5, 12, 0, 0, 0), end: new Date(2026, 5, 13, 3, 0, 0) },
-        match5: { name: "Katar vs Szwajcaria", start: new Date(2026, 5, 13, 0, 0, 0), end: new Date(2026, 5, 13, 21, 0, 0) },
-        match6: { name: "Brazylia vs Maroko", start: new Date(2026, 5, 13, 0, 0, 0), end: new Date(2026, 5, 14, 0, 0, 0) },
-        match7: { name: "Haiti vs Szkocja", start: new Date(2026, 5, 13, 0, 0, 0), end: new Date(2026, 5, 14, 3, 0, 0) },
-        match8: { name: "Australia vs Turcja", start: new Date(2026, 5, 13, 0, 0, 0), end: new Date(2026, 5, 14, 6, 0, 0) },
-        match9: { name: "Niemcy vs Curaçao", start: new Date(2026, 5, 14, 0, 0, 0), end: new Date(2026, 5, 14, 19, 0, 0) },
-        match10: { name: "Japonia vs Holandia", start: new Date(2026, 5, 14, 0, 0, 0), end: new Date(2026, 5, 14, 19, 0, 0) },
-        match11: { name: "WKS vs Ekwador", start: new Date(2026, 5, 14, 0, 0, 0), end: new Date(2026, 5, 15, 1, 0, 0) },
+        match4: { name: "USA vs Paragwaj", start: new Date(2026, 5, 12, 0, 0, 0), end: new Date(2026, 5, 12, 21, 0, 0) },
+        match5: { name: "Katar vs Szwajcaria", start: new Date(2026, 5, 13, 0, 0, 0), end: new Date(2026, 5, 13, 18, 0, 0) },
+        match6: { name: "Brazylia vs Maroko", start: new Date(2026, 5, 13, 0, 0, 0), end: new Date(2026, 5, 13, 21, 0, 0) },
+        match7: { name: "Haiti vs Szkocja", start: new Date(2026, 5, 13, 0, 0, 0), end: new Date(2026, 5, 14, 0, 0, 0) },
+        match8: { name: "Australia vs Turcja", start: new Date(2026, 5, 13, 0, 0, 0), end: new Date(2026, 5, 14, 3, 0, 0) },
+        match9: { name: "Niemcy vs Curaçao", start: new Date(2026, 5, 14, 0, 0, 0), end: new Date(2026, 5, 14, 18, 0, 0) },
+        match10: { name: "Japonia vs Holandia", start: new Date(2026, 5, 14, 0, 0, 0), end: new Date(2026, 5, 14, 21, 0, 0) },
+        match11: { name: "WKS vs Ekwador", start: new Date(2026, 5, 14, 0, 0, 0), end: new Date(2026, 5, 15, 0, 0, 0) },
         match12: { name: "Szwecja vs Tunezja", start: new Date(2026, 5, 14, 0, 0, 0), end: new Date(2026, 5, 15, 4, 0, 0) },
         match13: { name: "Hiszpania vs RZP", start: new Date(2026, 5, 15, 0, 0, 0), end: new Date(2026, 5, 15, 18, 0, 0) },
         match14: { name: "Belgia vs Egipt", start: new Date(2026, 5, 15, 0, 0, 0), end: new Date(2026, 5, 15, 21, 0, 0) },
@@ -1113,7 +1085,6 @@
     function selectProfile(profile) {
         document.getElementById('profile-menu-section').classList.add('hidden');
         hidePlanetMenu();
-
         if (profile === 'admin') {
             document.body.className = '';
             document.getElementById('admin-view').classList.remove('hidden');
@@ -1123,7 +1094,7 @@
             document.getElementById('admin-view').classList.add('hidden');
             const userView = document.getElementById('user-view');
             userView.classList.remove('hidden');
-            
+
             const animEnabled = localStorage.getItem(ANIM_PREFIX + currentProfile) !== 'false';
             if (animEnabled) {
                 userView.classList.add('fade-in');
@@ -1137,69 +1108,78 @@
             } else {
                 document.body.classList.remove('stripes-animation');
             }
+
+            document.getElementById('current-profile-name').innerText = profileNames[currentProfile];
             
-            document.getElementById('current-profile-name').innerText = profileNames[profile];
-            
-            loadUserPreferences();
-            setupCompareOptions();
+            const savedTheme = localStorage.getItem(THEME_PREFIX + currentProfile) || 'dark';
+            applyThemeStyles(savedTheme);
+
+            const savedCounterTheme = localStorage.getItem(COUNTER_THEME_PREFIX + currentProfile) || 'default';
+            applyCounterThemeStyles(savedCounterTheme);
+
+            const savedColor = localStorage.getItem(PROFILE_COLOR_PREFIX + currentProfile) || '#00ff00';
+            applyProfileColor(savedColor);
+
+            const savedCompareTheme = localStorage.getItem(COMPARE_THEME_PREFIX + currentProfile) || 'orange';
+            applyCompareThemeStyles(savedCompareTheme);
+
             switchWindow('matches');
-            checkMatchStatus();
+            renderCompareSelect();
+            renderPlanetButtons();
         }
     }
 
     function backToProfiles() {
-        currentProfile = null;
-        document.body.className = '';
-        const userView = document.getElementById('user-view');
-        userView.classList.add('hidden');
-        userView.classList.remove('fade-in');
+        document.getElementById('user-view').classList.add('hidden');
         document.getElementById('admin-view').classList.add('hidden');
         document.getElementById('profile-menu-section').classList.remove('hidden');
-        hidePlanetMenu();
-    }
-
-    function toggleAnim(enabled) {
-        if (!currentProfile) return;
-        localStorage.setItem(ANIM_PREFIX + currentProfile, enabled);
-    }
-    
-    function toggleStripes(enabled) {
-        if (!currentProfile) return;
-        if (calculateTotalPoints(currentProfile) < 10) {
-            alert("Funkcja zablokowana! Potrzebujesz 10 punktów.");
-            document.getElementById('stripes-toggle').checked = false;
-            return;
-        }
-        localStorage.setItem(STRIPES_PREFIX + currentProfile, enabled);
-        if (enabled) {
-            document.body.classList.add('stripes-animation');
-        } else {
-            document.body.classList.remove('stripes-animation');
-        }
+        document.body.className = '';
+        currentProfile = null;
     }
 
     function togglePlanetMenu() {
         document.getElementById('planet-dropdown-menu').classList.toggle('hidden');
-        const animEnabled = localStorage.getItem(ANIM_PREFIX + currentProfile) !== 'false';
-        document.getElementById('anim-toggle').checked = animEnabled;
-        const stripesEnabled = localStorage.getItem(STRIPES_PREFIX + currentProfile) === 'true';
-        document.getElementById('stripes-toggle').checked = stripesEnabled;
+    }
+    
+    function hidePlanetMenu() {
+        document.getElementById('planet-dropdown-menu').classList.add('hidden');
     }
 
-    function hidePlanetMenu() {
-        const menu = document.getElementById('planet-dropdown-menu');
-        if (menu) menu.classList.add('hidden');
+    function toggleAnim(checked) {
+        if (!currentProfile) return;
+        localStorage.setItem(ANIM_PREFIX + currentProfile, checked ? 'true' : 'false');
+        const userView = document.getElementById('user-view');
+        if (checked) userView.classList.add('fade-in');
+        else userView.classList.remove('fade-in');
+    }
+
+    function toggleStripes(checked) {
+        if (!currentProfile) return;
+        localStorage.setItem(STRIPES_PREFIX + currentProfile, checked ? 'true' : 'false');
+        if (checked) document.body.classList.add('stripes-animation');
+        else document.body.classList.remove('stripes-animation');
     }
 
     function renderPlanetButtons() {
         if (!currentProfile) return;
         const currentPoints = calculateTotalPoints(currentProfile);
-        
-        const container = document.getElementById('counter-fire-wrapper');
-        if (currentPoints >= 67) {
-            container.innerHTML = `<div id="sq-counter-fire" class="theme-square square-fire" onclick="setCounterTheme('fire')" title="Motyw Ogniowy Licznika"></div>`;
+
+        document.getElementById('anim-toggle').checked = localStorage.getItem(ANIM_PREFIX + currentProfile) !== 'false';
+        document.getElementById('stripes-toggle').checked = localStorage.getItem(STRIPES_PREFIX + currentProfile) === 'true';
+
+        const andorraContainer = document.getElementById('andorra-wrapper');
+        const rightProfile = rightSideProfileMap[currentProfile];
+        if (rightProfile && currentPoints > calculateTotalPoints(rightProfile)) {
+            andorraContainer.innerHTML = `<div id="sq-andorra" class="theme-square square-andorra" onclick="setUserTheme('andorra')" title="Flaga Andory (Więcej pkt niż gracz po prawej)"></div>`;
         } else {
-            container.innerHTML = `<div class="square-lock-fire" title="Zablokowane! Musisz mieć 67 punktów."><span>🔒 67</span></div>`;
+            andorraContainer.innerHTML = `<div class="square-lock" title="Zablokowane! Musisz mieć więcej punktów niż gracz po Twojej prawej stronie (${profileNames[rightProfile] || 'brak'})."><span>🔒 Wyprzedź prawego</span></div>`;
+        }
+
+        const fireContainer = document.getElementById('counter-fire-wrapper');
+        if (currentPoints >= 67) {
+            fireContainer.innerHTML = `<div id="sq-counter-fire" class="theme-square square-fire" onclick="setCounterTheme('fire')" title="Motyw Ogniowy Licznika"></div>`;
+        } else {
+            fireContainer.innerHTML = `<div class="square-lock-fire" title="Zablokowane! Musisz mieć 67 punktów."><span>🔒 67</span></div>`;
         }
 
         const blueWhiteContainer = document.getElementById('counter-blue-white-wrapper');
@@ -1237,50 +1217,12 @@
             heartsContainer.innerHTML = `<div class="square-lock-hearts" title="Zablokowane! Musisz mieć 7 punktów."><span>🔒 7</span></div>`;
         }
 
-        /* Przycisk dla NOWEGO motywu ognistego strony (od 70 punktów) */
         const fireThemeContainer = document.getElementById('fire-theme-wrapper');
         if (currentPoints >= 70) {
             fireThemeContainer.innerHTML = `<div id="sq-fire-theme" class="theme-square square-fire-theme" onclick="setUserTheme('fire-theme')" title="Motyw Ognisty Strony"></div>`;
         } else {
             fireThemeContainer.innerHTML = `<div class="square-lock-fire-theme" title="Zablokowane! Musisz mieć 70 punktów."><span>🔒 70</span></div>`;
         }
-        
-        const stripesContainer = document.getElementById('stripes-wrapper');
-        if (currentPoints >= 10) {
-            stripesContainer.innerHTML = `<div class="theme-square square-black" style="background:#555"></div>`;
-        } else {
-            stripesContainer.innerHTML = `<div class="square-lock-stripes" title="Zablokowane! Musisz mieć 10 punktów."><span>🔒 10</span></div>`;
-        }
-
-        const andorraContainer = document.getElementById('andorra-wrapper');
-        const rightProfile = rightSideProfileMap[currentProfile];
-        if (rightProfile && currentPoints > calculateTotalPoints(rightProfile)) {
-            andorraContainer.innerHTML = `<div id="sq-andorra" class="theme-square square-andorra" onclick="setUserTheme('andorra')" title="Motyw Andory (Darmowy!)"></div>`;
-        } else {
-            andorraContainer.innerHTML = ``;
-            if (localStorage.getItem(THEME_PREFIX + currentProfile) === 'andorra') {
-                localStorage.setItem(THEME_PREFIX + currentProfile, 'dark');
-                applyThemeStyles('dark');
-            }
-        }
-    }
-
-    function loadUserPreferences() {
-        if (!currentProfile) return;
-        
-        const savedTheme = localStorage.getItem(THEME_PREFIX + currentProfile) || 'dark';
-        applyThemeStyles(savedTheme);
-
-        renderPlanetButtons();
-        
-        const savedCounterTheme = localStorage.getItem(COUNTER_THEME_PREFIX + currentProfile) || 'default';
-        applyCounterStyles(savedCounterTheme);
-
-        const savedProfileColor = localStorage.getItem(PROFILE_COLOR_PREFIX + currentProfile) || '#00ff00';
-        applyProfileColor(savedProfileColor);
-
-        const savedCompareTheme = localStorage.getItem(COMPARE_THEME_PREFIX + currentProfile) || 'orange';
-        applyCompareThemeStyles(savedCompareTheme);
     }
 
     function setUserTheme(selectedTheme) {
@@ -1313,6 +1255,7 @@
                 return;
             }
         }
+
         localStorage.setItem(THEME_PREFIX + currentProfile, selectedTheme);
         applyThemeStyles(selectedTheme);
         hidePlanetMenu();
@@ -1328,17 +1271,17 @@
         if (theme === 'andorra' && (!rightProfile || calculateTotalPoints(currentProfile) <= calculateTotalPoints(rightProfile))) {
             theme = 'dark';
         }
-        
+
         document.body.className = theme === 'light' ? 'light-theme' : (theme === 'gradient' ? 'gradient-theme' : (theme === 'hearts' ? 'hearts-theme' : (theme === 'fire-theme' ? 'fire-page-theme' : (theme === 'andorra' ? 'andorra-theme' : ''))));
         if (localStorage.getItem(STRIPES_PREFIX + currentProfile) === 'true') document.body.classList.add('stripes-animation');
-        
+
         const sqDark = document.getElementById('sq-dark');
         const sqLight = document.getElementById('sq-light');
         const sqGrad = document.getElementById('sq-gradient');
         const sqHearts = document.getElementById('sq-hearts');
         const sqFireTheme = document.getElementById('sq-fire-theme');
         const sqAndorra = document.getElementById('sq-andorra');
-        
+
         if (sqDark) sqDark.classList.toggle('active-square', theme === 'dark');
         if (sqLight) sqLight.classList.toggle('active-square', theme === 'light');
         if (sqGrad) sqGrad.classList.toggle('active-square', theme === 'gradient');
@@ -1347,23 +1290,25 @@
         if (sqAndorra) sqAndorra.classList.toggle('active-square', theme === 'andorra');
     }
 
-    function setCounterTheme(selectedCounterTheme) {
+    function setCounterTheme(counterTheme) {
         if (!currentProfile) return;
-        if (selectedCounterTheme === 'fire' && calculateTotalPoints(currentProfile) < 67) {
-            alert("Motyw zablokowany! Potrzebujesz 67 punktów.");
+        if (counterTheme === 'fire' && calculateTotalPoints(currentProfile) < 67) {
+            alert("Licznik zablokowany! Potrzebujesz 67 punktów.");
             return;
         }
-        if (selectedCounterTheme === 'blue-white' && calculateTotalPoints(currentProfile) < 7) {
-            alert("Motyw zablokowany! Potrzebujesz 7 punktów.");
+        if (counterTheme === 'blue-white' && calculateTotalPoints(currentProfile) < 7) {
+            alert("Licznik zablokowany! Potrzebujesz 7 punktów.");
             return;
         }
-        localStorage.setItem(COUNTER_THEME_PREFIX + currentProfile, selectedCounterTheme);
-        applyCounterStyles(selectedCounterTheme);
+        localStorage.setItem(COUNTER_THEME_PREFIX + currentProfile, counterTheme);
+        applyCounterThemeStyles(counterTheme);
         hidePlanetMenu();
     }
 
-    function applyCounterStyles(counterTheme) {
+    function applyCounterThemeStyles(counterTheme) {
         const mainCounter = document.getElementById('big-points-value');
+        if (!mainCounter) return;
+
         const sqDefault = document.getElementById('sq-counter-default');
         const sqWhite = document.getElementById('sq-counter-white');
         const sqFire = document.getElementById('sq-counter-fire');
@@ -1422,6 +1367,7 @@
         const sqRed = document.getElementById('sq-profile-red');
         const sqPink = document.getElementById('sq-profile-pink');
         const sqSystem = document.getElementById('sq-profile-system');
+
         if (sqYellow) sqYellow.classList.toggle('active-square', color === '#ffd700');
         if (sqRed) sqRed.classList.toggle('active-square', color === '#ff0000');
         if (sqPink) sqPink.classList.toggle('active-square', color === '#ff69b4');
@@ -1444,48 +1390,98 @@
 
     function switchWindow(windowType) {
         document.querySelectorAll('.window-box').forEach(el => el.classList.add('hidden'));
-        document.querySelectorAll('.submenu-btn').forEach(el => el.classList.remove('active'));
-
-        const mapping = {
-            'matches': ['window-matches', 'sub-btn-matches'],
-            'table': ['window-table', 'sub-btn-table'],
-            'points': ['window-points', 'sub-btn-points'],
-            'compare': ['window-compare', 'sub-btn-compare'],
-            'ranking': ['window-ranking', 'sub-btn-ranking']
-        };
+        document.querySelectorAll('.submenu-btn').forEach(btn => btn.classList.remove('active'));
         
-        document.getElementById(mapping[windowType][0]).classList.remove('hidden');
-        document.getElementById(mapping[windowType][1]).classList.add('active');
-        
-        if (windowType === 'compare') updateComparison();
-        if (windowType === 'ranking') renderRankingTable();
-        if (windowType === 'matches') checkMatchStatus();
+        if (windowType === 'matches') {
+            document.getElementById('window-matches').classList.remove('hidden');
+            document.getElementById('sub-btn-matches').classList.add('active');
+            checkMatchStatus();
+        } else if (windowType === 'table') {
+            document.getElementById('window-table').classList.remove('hidden');
+            document.getElementById('sub-btn-table').classList.add('active');
+            renderScoreTable();
+        } else if (windowType === 'points') {
+            document.getElementById('window-points').classList.remove('hidden');
+            document.getElementById('sub-btn-points').classList.add('active');
+            
+            const stats = getPlayerStats(currentProfile);
+            document.getElementById('big-points-value').innerText = stats.points;
+            applyCounterThemeStyles(localStorage.getItem(COUNTER_THEME_PREFIX + currentProfile) || 'default');
+            
+            const formaWindow = document.getElementById('forma-window');
+            if (stats.points >= 47) {
+                const last5 = stats.history.slice(-5).join('');
+                formaWindow.innerHTML = `FORMA: ${last5}`;
+                formaWindow.classList.remove('hidden');
+            } else {
+                formaWindow.classList.add('hidden');
+            }
+        } else if (windowType === 'compare') {
+            document.getElementById('window-compare').classList.remove('hidden');
+            document.getElementById('sub-btn-compare').classList.add('active');
+            updateComparison();
+        } else if (windowType === 'ranking') {
+            document.getElementById('window-ranking').classList.remove('hidden');
+            document.getElementById('sub-btn-ranking').classList.add('active');
+            renderRankingTable();
+        }
     }
 
-    function setupCompareOptions() {
-        const selectEl = document.getElementById('compare-profile-select');
-        selectEl.innerHTML = '<option value="">-- Wybierz osobę --</option>';
-        for (const key in profileNames) {
-            if (key !== currentProfile) selectEl.innerHTML += `<option value="${key}">${profileNames[key]}</option>`;
+    function checkMatchStatus() {
+        const now = new Date();
+        for (const matchId in matchesConfig) {
+            const match = matchesConfig[matchId];
+            const statusEl = document.getElementById('status-' + matchId);
+            const formEl = document.getElementById('betting-form-match1' ? document.getElementById('betting-form-' + matchId) : null);
+            
+            const bet = JSON.parse(localStorage.getItem(BET_PREFIX + currentProfile + '_' + matchId));
+            const globalResult = JSON.parse(localStorage.getItem(STORAGE_KEY_PREFIX_GLOBAL + matchId));
+
+            if (globalResult) {
+                if (statusEl) statusEl.innerHTML = `Mecz zakończony. Wynik: <b>${globalResult.home}:${globalResult.away}</b>. Twój typ: ${bet ? bet.home+":"+bet.away : "Brak"}`;
+                if (formEl) formEl.classList.add('hidden');
+            } else if (now > match.start) {
+                if (statusEl) statusEl.innerHTML = `🔒 Trwa mecz lub oczekiwanie na wynik (Zablokowane). Twój typ: ${bet ? bet.home+":"+bet.away : "Brak"}`;
+                if (formEl) formEl.classList.add('hidden');
+            } else {
+                if (statusEl) statusEl.innerHTML = bet ? `Twój aktualny typ: <b>${bet.home}:${bet.away}</b> (Możesz zmienić)` : "Nie oddałeś jeszcze typu.";
+                if (formEl) {
+                    formEl.classList.remove('hidden');
+                    if (bet) {
+                        document.getElementById('bet-home-' + matchId).value = bet.home;
+                        document.getElementById('bet-away-' + matchId).value = bet.away;
+                    } else {
+                        document.getElementById('bet-home-' + matchId).value = "";
+                        document.getElementById('bet-away-' + matchId).value = "";
+                    }
+                }
+            }
         }
-        document.getElementById('compare-result-box').classList.add('hidden');
     }
 
     function getPlayerStats(profileKey) {
-        let totalPoints = 0, count3 = 0, count1 = 0, count0 = 0;
+        let totalPoints = 0;
+        let count3 = 0, count1 = 0, count0 = 0;
         let history = [];
+
         for (const matchId in matchesConfig) {
             const savedBet = JSON.parse(localStorage.getItem(BET_PREFIX + profileKey + '_' + matchId));
             const globalResult = JSON.parse(localStorage.getItem(STORAGE_KEY_PREFIX_GLOBAL + matchId));
-            if (!globalResult) continue;
-            if (!savedBet) { count0++; history.push(0); continue; }
-            if (savedBet.home === globalResult.home && savedBet.away === globalResult.away) {
-                totalPoints += 3; count3++; history.push(3);
-            } else if ((savedBet.home > savedBet.away && globalResult.home > globalResult.away) || 
-                       (savedBet.home === savedBet.away && globalResult.home === globalResult.away) || 
-                       (savedBet.home < savedBet.away && globalResult.home < globalResult.away)) {
-                totalPoints += 1; count1++; history.push(1);
-            } else { count0++; history.push(0); }
+
+            if (globalResult && savedBet) {
+                if (savedBet.home === globalResult.home && savedBet.away === globalResult.away) {
+                    totalPoints += 3;
+                    count3++;
+                    history.push(3);
+                } else if ((savedBet.home > savedBet.away && globalResult.home > globalResult.away) || (savedBet.home === savedBet.away && globalResult.home === globalResult.away) || (savedBet.home < savedBet.away && globalResult.home < globalResult.away)) {
+                    totalPoints += 1;
+                    count1++;
+                    history.push(1);
+                } else {
+                    count0++;
+                    history.push(0);
+                }
+            }
         }
         return { name: profileNames[profileKey], points: totalPoints, c3: count3, c1: count1, c0: count0, history: history };
     }
@@ -1494,10 +1490,24 @@
         return getPlayerStats(profileKey).points;
     }
 
+    function renderCompareSelect() {
+        const select = document.getElementById('compare-profile-select');
+        select.innerHTML = '<option value="">-- Wybierz profil --</option>';
+        for (const key in profileNames) {
+            if (key !== currentProfile) {
+                select.innerHTML += `<option value="${key}">${profileNames[key]}</option>`;
+            }
+        }
+    }
+
     function updateComparison() {
         const targetProfile = document.getElementById('compare-profile-select').value;
         const resultBox = document.getElementById('compare-result-box');
-        if (!targetProfile) { resultBox.classList.add('hidden'); return; }
+        if (!targetProfile) {
+            resultBox.classList.add('hidden');
+            return;
+        }
+
         document.getElementById('compare-name-label').innerText = `Suma punktów profilu ${profileNames[targetProfile]}`;
         document.getElementById('compare-points-value').innerText = calculateTotalPoints(targetProfile);
         
@@ -1510,7 +1520,6 @@
             compareValueEl.style.color = '#ffaa00';
             compareValueEl.style.textShadow = '0 0 20px rgba(255, 170, 0, 0.4)';
         }
-        
         resultBox.classList.remove('hidden');
     }
 
@@ -1519,78 +1528,14 @@
         rankingBody.innerHTML = "";
         let familyData = Object.keys(profileNames).map(key => getPlayerStats(key));
         familyData.sort((a, b) => b.points !== a.points ? b.points - a.points : b.c3 - a.c3);
+
         familyData.forEach((player, index) => {
-            rankingBody.innerHTML += `<tr><td><b>${index + 1}</b></td><td><b>${player.name}</b></td><td style="color: #00ff00;">${player.c3}</td><td style="color: #ffaa00;">${player.c1}</td><td style="color: #ff5555;">${player.c0}</td><td style="font-weight: bold; color: #00ff00;">${player.points}</td></tr>`;
+            rankingBody.innerHTML += `<tr><td><b>${index + 1}</b></td><td><b>${player.name}</b></td><td><b style="color:#00ff00; font-size:15px;">${player.points}</b></td><td>${player.c3}</td><td>${player.c1}</td><td>${player.c0}</td></tr>`;
         });
     }
 
-    function checkMatchStatus() {
-        if (!currentProfile) return;
-        const now = new Date();
-        for (const matchId in matchesConfig) {
-            const config = matchesConfig[matchId];
-            const bettingForm = document.getElementById('betting-form-' + matchId);
-            const statusElement = document.getElementById('status-' + matchId);
-            const cardElement = document.getElementById('card-' + matchId);
-            const globalResult = JSON.parse(localStorage.getItem(STORAGE_KEY_PREFIX_GLOBAL + matchId));
-
-            if (globalResult) {
-                cardElement.classList.add("hidden");
-                statusElement.innerText = "Mecz zakończony i rozliczony.";
-                continue;
-            }
-            cardElement.classList.remove("hidden");
-            if (now < config.start) {
-                bettingForm.className = "hidden";
-                statusElement.innerText = `Mecz zablokowany. Odblokowanie: ${config.start.getDate()}.06.2026 o 00:00.`;
-            } else if (now >= config.start && now < config.end) {
-                bettingForm.className = "inputs-bet";
-                statusElement.innerText = `Mecz odblokowany! Czas do ${config.end.getDate()}.06 o ${config.end.getHours() < 10 ? '0' + config.end.getHours() : config.end.getHours()}:00.`;
-                
-                const savedBet = JSON.parse(localStorage.getItem(BET_PREFIX + currentProfile + '_' + matchId));
-                const inputHome = document.getElementById('bet-home-' + matchId);
-                const inputAway = document.getElementById('bet-away-' + matchId);
-                
-                if (savedBet && inputHome.value === "" && inputAway.value === "") {
-                    inputHome.value = savedBet.home;
-                    inputAway.value = savedBet.away;
-                }
-            } else {
-                cardElement.classList.add("hidden");
-                statusElement.innerText = "Oczekiwanie na wynik od Admina...";
-            }
-        }
-        renderTableAndPoints();
-    }
-
-    function saveBet(matchId) {
-        const savedHome = document.getElementById('bet-home-' + matchId).value;
-        const savedAway = document.getElementById('bet-away-' + matchId).value;
-        if (savedHome === "" || savedAway === "") { alert("Uzupełnij bramki!"); return; }
-        
-        localStorage.setItem(BET_PREFIX + currentProfile + '_' + matchId, JSON.stringify({ home: parseInt(savedHome), away: parseInt(savedAway) }));
-        alert("Zapisano!");
-        renderPlanetButtons();
-        checkMatchStatus();
-    }
-
-    function verifyAndApplyScore() {
-        if (document.getElementById('admin-code').value !== "616263") { alert("BŁĄD: Nieprawidłowy kod!"); return; }
-        const matchId = document.getElementById('admin-match-select').value;
-        const h = document.getElementById('real-home').value, a = document.getElementById('real-away').value;
-        if (h === "" || a === "") { alert("BŁĄD: Wpisz wynik!"); return; }
-        localStorage.setItem(STORAGE_KEY_PREFIX_GLOBAL + matchId, JSON.stringify({ home: parseInt(h), away: parseInt(a) }));
-        backToProfiles();
-    }
-
-    function renderTableAndPoints() {
-        if (!currentProfile) return;
+    function renderScoreTable() {
         const totalPoints = calculateTotalPoints(currentProfile);
-        document.getElementById('big-points-value').innerText = totalPoints;
-        renderPlanetButtons();
-        
-        const savedTheme = localStorage.getItem(THEME_PREFIX + currentProfile) || 'dark';
-        applyThemeStyles(savedTheme);
         
         const formaWindow = document.getElementById('forma-window');
         if (totalPoints >= 47) {
@@ -1612,12 +1557,56 @@
                 if (bet.home === global.home && bet.away === global.away) pts = 3;
                 else if ((bet.home > bet.away && global.home > global.away) || (bet.home === bet.away && global.home === global.away) || (bet.home < bet.away && global.home < global.away)) pts = 1;
             }
-            body.innerHTML += `<tr><td><b>${matchesConfig[matchId].name}</b></td><td>${bet ? bet.home+":"+bet.away : "Brak"}</td><td><b>${global ? global.home+":"+global.away : "Oczekiwanie"}</b></td><td style="color:${global?(pts>0?'#00ff00':'#ff5555'):'#aaa'}">${global ? "+"+pts : "0"}</td></tr>`;
+            body.innerHTML += `<tr><td><b>${matchesConfig[matchId].name}</b></td><td>${bet ? bet.home+":"+bet.away : "Brak"}</td><td><b>${global ? global.home+":"+global.away : "Oczekiwanie"}</b></td><td style=\"color:${global?(pts>0?'#00ff00':'#ff5555'):'#ffffff'}; font-weight:bold;\">${global ? "+"+pts : "-"}</td></tr>`;
         }
     }
 
-    setInterval(checkMatchStatus, 1000);
-</script>
+    function saveBet(matchId) {
+        const now = new Date();
+        if (now > matchesConfig[matchId].start) {
+            alert("Mecz już się rozpoczął! Nie możesz typować.");
+            return;
+        }
+        const savedHome = document.getElementById('bet-home-' + matchId).value;
+        const savedAway = document.getElementById('bet-away-' + matchId).value;
+        if (savedHome === "" || savedAway === "") {
+            alert("Uzupełnij bramki!");
+            return;
+        }
+        localStorage.setItem(BET_PREFIX + currentProfile + '_' + matchId, JSON.stringify({ home: parseInt(savedHome), away: parseInt(savedAway) }));
+        alert("Zapisano!");
+        renderPlanetButtons();
+        checkMatchStatus();
+    }
 
+    function verifyAndApplyScore() {
+        if (document.getElementById('admin-code').value !== "616263") {
+            alert("BŁĄD: Nieprawidłowy kod!");
+            return;
+        }
+        const matchId = document.getElementById('admin-match-select').value;
+        const h = document.getElementById('real-home').value, a = document.getElementById('real-away').value;
+        if (h === "" || a === "") {
+            alert("BŁĄD: Wpisz wynik!");
+            return;
+        }
+        localStorage.setItem(STORAGE_KEY_PREFIX_GLOBAL + matchId, JSON.stringify({ home: parseInt(h), away: parseInt(a) }));
+        alert("Wynik wprowadzony globalnie dla meczu: " + matchesConfig[matchId].name);
+        document.getElementById('real-home').value = "";
+        document.getElementById('real-away').value = "";
+    }
+
+    function initAdminPanel() {
+        const select = document.getElementById('admin-match-select');
+        select.innerHTML = "";
+        for (const matchId in matchesConfig) {
+            select.innerHTML += `<option value="${matchId}">${matchesConfig[matchId].name}</option>`;
+        }
+    }
+
+    window.onload = function() {
+        initAdminPanel();
+    };
+</script>
 </body>
 </html>
